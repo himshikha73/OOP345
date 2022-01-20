@@ -63,10 +63,9 @@ namespace sdds
 	}
 	void FoodOrder::read(istream& is)
 	{
-		string toRead;
-		char dailySpecial;
 		if (is) {
-
+			string toRead;
+			char dailySpecial = 'N';
 			is.getline(m_customerName, 10, ',');
 			//is.getline(m_description, 25, ',');
 			getline(is, toRead,',');
@@ -81,15 +80,11 @@ namespace sdds
 			is >> m_price;
 			is.ignore();
 			is >> dailySpecial;
-			if (dailySpecial == 'Y') {
-				m_dailySpecial = true;
-			}
-			else if (dailySpecial == 'N') {
-				m_dailySpecial = false;
-			}
+			m_dailySpecial = dailySpecial != 'N';
 			is.ignore();
 		}
 	}
+
 	FoodOrder::operator bool() const
 	{
 		return m_customerName[0];
