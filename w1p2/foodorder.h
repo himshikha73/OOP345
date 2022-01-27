@@ -3,7 +3,7 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           16.01.2022
+// Date:           22.01.2022
 //==============================================
 
 #ifndef SDDS_FOODORDER_H_
@@ -21,6 +21,8 @@ namespace sdds
     public:
         FoodOrder();
         ~FoodOrder();
+        FoodOrder(const FoodOrder& foodOrder);
+        FoodOrder& operator=(const FoodOrder& foodOrder);
         void display()const;
         void read(std::istream& is);
         operator bool() const;

@@ -3,11 +3,12 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           16.01.2022
+// Date:           22.01.2022
 //==============================================
 
 #define  _CRT_SECURE_NO_WARNINGS
 #include <string>
+#include <cstring>
 #include "foodorder.h"
 using namespace std;
 namespace sdds 
@@ -21,10 +22,28 @@ namespace sdds
 	FoodOrder::FoodOrder() : m_price(0), m_dailySpecial(false){
 
 	}
+	//copy constructor
+	FoodOrder::FoodOrder(const FoodOrder& foodOrder) {
+		if (foodOrder) {
+			*this = foodOrder;
+		}
+	}
 	FoodOrder::~FoodOrder() {
 		delete[] m_description;
-		//m_description = nullptr;
 	}
+	//copy assignment
+	FoodOrder& FoodOrder::operator=(const FoodOrder& foodOrder) {
+		if (this != &foodOrder) { //if not self copy
+			strcpy(m_customerName, foodOrder.m_customerName);
+			delete[] m_description;
+			m_description = new char[strlen(foodOrder.m_description) + 1];
+			strcpy(m_description, foodOrder.m_description);
+			m_price = foodOrder.m_price;
+			m_dailySpecial = foodOrder.m_dailySpecial;
+		}
+		return *this;
+	}
+	//display formated data only if object is not empty
 	void FoodOrder::display() const
 	{
 		cout.width(2);
@@ -64,16 +83,14 @@ namespace sdds
 	void FoodOrder::read(istream& is)
 	{
 		if (is) {
-			string toRead;
+			string toRead; 
 			char dailySpecial = 'N';
 			is.getline(m_customerName, 10, ',');
-			//is.getline(m_description, 25, ',');
+			//read String of any size
 			getline(is, toRead,',');
 
 			//free, allocate and copy value of boundless string to fixed size c-string
-			//m_description = nullptr;
-			//delete[] m_description;
-			m_description = nullptr;
+			delete[] m_description;
 			m_description = new char[toRead.length() + 1];
 			strcpy(m_description, toRead.c_str());
 
@@ -84,7 +101,7 @@ namespace sdds
 			is.ignore();
 		}
 	}
-
+	//check if customer name is not empty string
 	FoodOrder::operator bool() const
 	{
 		return m_customerName[0];
