@@ -24,9 +24,9 @@ namespace sdds
 		m_name{ name } {
 		//body
 		//m_toys = toys;
-		const_cast<const sdds::Toy**>(m_toys = toys);
+		//const_cast<const sdds::Toy**>(m_toys = toys);
 		//m_toys = new const Toy* [count];
-		//m_toys = const_cast<const sdds::Toy**>(toys);
+		m_toys = const_cast<const sdds::Toy**>(toys);
 		//for (int i = 0; i < static_cast<int>(count); i++) {
 		//m_toys[i] = toys[i];
 		//}
@@ -79,11 +79,13 @@ namespace sdds
 			m_age = rightOperand.m_age;
 			m_toysNum = rightOperand.m_toysNum;
 			m_name = rightOperand.m_name;
-			this->m_toys = new const Toy * [size()]{}; //m_toysNum
-			for (size_t i = 0; i < size(); i++) //m_toysNum
-			{
-				this->m_toys[i] = rightOperand.m_toys[i];
-			}
+			//delete[] m_toys;
+			//m_toys = new const Toy * [size()]{}; //m_toysNum
+			//for (size_t i = 0; i < size(); i++) //m_toysNum
+			//{
+			//	m_toys[i] = rightOperand.m_toys[i];
+			//}
+			m_toys = rightOperand.m_toys;
 		}
 		return *this;
 	} 
@@ -113,6 +115,7 @@ namespace sdds
 		//{
 			//delete this->m_toys[i]; //this
 		//}
+		//delete[] m_toys;
 		
 	}
 }

@@ -25,15 +25,19 @@ namespace sdds
 	ConfirmOrder& ConfirmOrder::operator+=(const Toy& toy) {
 		bool unique = true;
 		//allocate and copy
+		//delete[] m_toys;
 		const Toy** toys = new const Toy * [m_toysNum + 1]{};
 		for (int i = 0; i < m_toysNum; i++)
 		{
 			toys[i] = m_toys[i];
 		}
+		
 		//for (int i = 0; i < m_toysNum; i++)
 		//{
 		//	delete m_toys[i];
 		//}
+		delete[] m_toys;
+		//delete[] toys;
 		m_toys = toys;
 
 		//check for uniqueness
@@ -87,6 +91,7 @@ namespace sdds
 			//	delete m_toys[i];
 			//}
 			m_toysNum = rightOperand.m_toysNum;
+			delete[] m_toys;
 			m_toys = new const Toy * [m_toysNum] {};
 			for (int i = 0; i < m_toysNum; i++)
 			{
@@ -117,6 +122,7 @@ namespace sdds
 		//{
 		//	delete m_toys[i];
 		//}
+		delete[] m_toys;
 	}
 	std::ostream& operator<<(std::ostream& ostr, const ConfirmOrder& rightOperand) {
 		ostr << "--------------------------" << endl;
