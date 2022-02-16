@@ -9,11 +9,6 @@
 #define  _CRT_SECURE_NO_WARNINGS
 #include <string>
 #include <iostream>
-//#include <algorithm>
-//#include <iterator>
-//#include <cstring>
-//#include <functional>
-//#include <iomanip>
 #include "Child.h"
 using namespace std;
 namespace sdds
@@ -69,7 +64,7 @@ namespace sdds
 	Child& Child::operator=(const Child& rightOperand) {
 		if (this != &rightOperand) { //if not self copy
 
-			for (int i = 0; i < m_toysNum; i++)
+			for (size_t i = 0; i < m_toysNum; i++)
 			{
 			   delete this->m_toys[i]; //this
 			}
@@ -93,7 +88,7 @@ namespace sdds
 		if (this != &rightOperand) {
 
 
-			for (int i = 0; i < m_toysNum; i++) {
+			for (size_t i = 0; i < m_toysNum; i++) {
 				delete this->m_toys[i]; //this
 			}
 			delete[] this->m_toys;
@@ -112,7 +107,7 @@ namespace sdds
 	} 
 	Child::~Child() {
 
-		for (int i = 0; i < m_toysNum; i++) {
+		for (size_t i = 0; i < m_toysNum; i++) {
 			delete this->m_toys[i]; //this
 		}
 		delete[] this->m_toys;

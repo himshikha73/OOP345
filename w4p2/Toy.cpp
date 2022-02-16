@@ -57,7 +57,7 @@ namespace sdds
 	}
 
 	void Toy::update(int numItems) {
-		this->m_itemsNum = numItems;
+		m_itemsNum = numItems;
 	}
 
 	ostream& Toy::write(ostream& ostr)const {
