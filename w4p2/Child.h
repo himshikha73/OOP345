@@ -17,7 +17,7 @@ namespace sdds
 	{
 	private:
 		int m_age{};
-		int m_toysNum{};
+		size_t m_toysNum{};
 		std::string m_name{};
 		const Toy** m_toys{};
 	public:

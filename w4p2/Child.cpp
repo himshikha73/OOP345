@@ -7,10 +7,10 @@
 //==============================================
 
 #define  _CRT_SECURE_NO_WARNINGS
-//#include <string>
+#include <string>
+#include <iostream>
 //#include <algorithm>
 //#include <iterator>
-//#include <iostream>
 //#include <cstring>
 //#include <functional>
 //#include <iomanip>
@@ -20,16 +20,12 @@ namespace sdds
 {
 	Child::Child(string name, int age, const Toy* toys[], size_t count) :
 		m_age{ age },
-		m_toysNum{ (int)count },
+		m_toysNum{ count },
 		m_name{ name } {
-		//body
-		//m_toys = toys;
-		//const_cast<const sdds::Toy**>(m_toys = toys);
-		//m_toys = new const Toy* [count];
-		m_toys = const_cast<const sdds::Toy**>(toys);
-		//for (int i = 0; i < static_cast<int>(count); i++) {
-		//m_toys[i] = toys[i];
-		//}
+		m_toys = new const Toy* [count];
+		for (int i = 0; i < static_cast<int>(count); i++) {
+			m_toys[i] = new Toy(*toys[i]);
+		}
 	}
 	size_t Child::size() const {
 		return m_toysNum;
@@ -44,7 +40,7 @@ namespace sdds
 			for (size_t i = 0; i < rightOperand.size(); i++) { //m_toysNum
 				//for (int i = 0; i < rightOperand.m_toysNum; i++) //rightOperand.m_toysNum ????
 				//{
-				ostr << *(rightOperand.m_toys[i]); //???
+				ostr << *rightOperand.m_toys[i]; //???
 				//(*PlaneAlfa.Parties[j]).name
 			//}
 			}
@@ -67,25 +63,28 @@ namespace sdds
 	} 
 	// move copyconstructor
 	Child::Child(Child&& rightOperand) {
-		operator=(move(rightOperand));
+		operator=(std::move(rightOperand));
 	}  
 	// copy assignment operator
 	Child& Child::operator=(const Child& rightOperand) {
 		if (this != &rightOperand) { //if not self copy
-			//for (int i = 0; i < m_toysNum; i++)
-			//{
-			//	delete this->m_toys[i]; //this
-			//}
+
+			for (int i = 0; i < m_toysNum; i++)
+			{
+			   delete this->m_toys[i]; //this
+			}
+			delete[] this->m_toys;
+
 			m_age = rightOperand.m_age;
 			m_toysNum = rightOperand.m_toysNum;
 			m_name = rightOperand.m_name;
-			//delete[] m_toys;
-			//m_toys = new const Toy * [size()]{}; //m_toysNum
-			//for (size_t i = 0; i < size(); i++) //m_toysNum
-			//{
-			//	m_toys[i] = rightOperand.m_toys[i];
-			//}
-			m_toys = rightOperand.m_toys;
+			
+			m_toys = new const Toy * [size()]; //m_toysNum
+			for (size_t i = 0; i < size(); i++) //m_toysNum
+			{
+				m_toys[i] = new Toy(*rightOperand.m_toys[i]);
+			}
+			
 		}
 		return *this;
 	} 
@@ -93,10 +92,11 @@ namespace sdds
 	Child& Child::operator=(Child&& rightOperand) {
 		if (this != &rightOperand) {
 
-			//for (int i = 0; i < m_toysNum; i++)
-			//{
-			//	delete this->m_toys[i]; //this
-			//}
+
+			for (int i = 0; i < m_toysNum; i++) {
+				delete this->m_toys[i]; //this
+			}
+			delete[] this->m_toys;
 			//move
 			m_toys = rightOperand.m_toys;
 			m_age = rightOperand.m_age;
@@ -111,11 +111,11 @@ namespace sdds
 		return *this;
 	} 
 	Child::~Child() {
-		//for (int i = 0; i < m_toysNum; i++)
-		//{
-			//delete this->m_toys[i]; //this
-		//}
-		//delete[] m_toys;
+
+		for (int i = 0; i < m_toysNum; i++) {
+			delete this->m_toys[i]; //this
+		}
+		delete[] this->m_toys;
 		
 	}
 }
