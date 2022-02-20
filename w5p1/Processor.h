@@ -9,7 +9,24 @@
 #define SDDS_PROCESSOR_H_
 #include <string>
 #include <iostream>
+#include "CentralUnit.h"
 namespace sdds
 {
+	class Processor
+	{
+	private:
+		CentralUnit<Processor>* m_host{};
+		std::string m_brand{};
+		std::string m_code{};
+		int m_power{};
+		Job* m_current{};
+	public:
+		Processor();
+		Processor(CentralUnit<Processor>* hostCentralUnit, std::string brand, std::string code, int power);
+		void run();
+		explicit operator bool() const;
+		Processor& operator+=(Job*&);
+		Job* get_current_job() const;
+	};
 }
 #endif // !SDDS_PROCESSOR_H_

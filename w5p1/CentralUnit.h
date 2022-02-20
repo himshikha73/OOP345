@@ -8,7 +8,9 @@
 #ifndef SDDS_CENTRALUNIT_H_
 #define SDDS_CENTRALUNIT_H_
 #include <string>
+#include <cstring>
 #include <iostream>
+#include <fstream>
 #include "Job.h"
 namespace sdds
 {
@@ -17,17 +19,25 @@ namespace sdds
 	{
 	private:
 		std::string m_type{};
-		T** m_items{};
-		Job* m_jobs[4];
+		T** m_items{}; //a dynamically-allocated array of pointers to individual units of type T (i.e. any type). These are the units that will be hosted in the CentralUnit object.
+		Job* m_jobs[4]; // a statically-allocated array of pointers to jobs that are queued up and waiting to be handled by an individual unit when the central unit is run. Only a maximum of 4 jobs can be queued up at any given time.
 		size_t m_size{};//stores the number of individual units hosted by the central unit.
 		size_t m_count{};//stores the number of jobs queued upand waiting to be handled.
 	public:
-		std::ostream& log;
-		CentralUnit() {}
-		CentralUnit(std::string type, char* fileName);
+		//std::ostream& log;
+		CentralUnit();
+		CentralUnit(const std::string type,const char* fileName);
+		//CentralUnit(T* hostCentralUnit, std::string type, char* fileName, unsigned int workCapacity);
+		~CentralUnit();
+		CentralUnit(const CentralUnit& rightOperand); // copy constructor
+		CentralUnit& operator=(const CentralUnit& rightOperand); // copy assignment operator
+		CentralUnit& operator+=(const std::string jobName);
+		void run();
+		bool has_jobs()const; /// ????????????????
+		int get_available_units();
 	};
 
-	static int findNonChar(std::string str, bool reversed = false) {
+	static size_t findNonChar(std::string str, bool reversed = false) {
 		if (reversed) {
 			for (size_t i = str.length() - 1; i >= 0; i--)
 			{
@@ -46,8 +56,13 @@ namespace sdds
 	template <typename T>
 	CentralUnit<T>::CentralUnit() {}
 
+	//template <typename T>
+	//CentralUnit<T>::CentralUnit(T* hostCentralUnit, std::string type, char* fileName, unsigned int workCapacity) {
+
+	//}
+
 	template <typename T>
-	CentralUnit<T>::CentralUnit(std::string type, char* fileName) {
+	CentralUnit<T>::CentralUnit(const std::string type, const char* fileName) {
 		std::ifstream file(fileName);
 		try {
 			if (!file)
@@ -96,11 +111,67 @@ namespace sdds
 				end_pos = 0;
 			}
 			catch (std::exception& err) {
-				//WORK_CAPACITY = 0; ???????????
+				m_size = 0;//WORK_CAPACITY = 0; ???????????
 			}
 
 		}
 	}
+	template <typename T>
+	CentralUnit<T>& CentralUnit<T>::operator+=(const std::string) {
+		try {
+			if (m_count > 4)
+				throw 1;
+			//Job newJob = new Job();
+			m_jobs[m_count] = new Job;
+		}
+		catch(int i) {
+			std::cout << "STRING ERROR" << std::endl;
+		}
+		return *this;
+	}
+	template <typename T>
+	void CentralUnit<T>::run() { 
+		for (size_t i = 0; i < m_count; i++)
+		{
+			// ???????????????????????????????????????????????????????????????????
+		}
+	}
+	template <typename T>
+	bool CentralUnit<T>::has_jobs()const {
+		return false;
+		// return ???????????????????????????????????????????????????
+	}
+	template <typename T>
+	int CentralUnit<T>::get_available_units() {
+		return 0;
+		//return ????????????????????????????????????????????????
+	}
+	template <typename T>
+	CentralUnit<T>::~CentralUnit() {
+
+	}
+	template <typename T>
+	CentralUnit<T>::CentralUnit(const CentralUnit& rightOperand) {
+		try {
+			throw 1;
+			//throw std::exception;
+		}
+		catch (int i) {
+		//catch (std::exception) {
+
+		}
+		//throw compilte time error
+	} // copy constructor
+	template <typename T>
+	CentralUnit<T>& CentralUnit<T>::operator=(const CentralUnit<T>& rightOperand) {
+		try {
+			throw std::exception;
+		}
+		catch (std::exception) {
+
+		}
+		//throw compilte time error
+	} // copy assignment operator
 
 }
 #endif // !SDDS_CENTRALUNIT_H_
