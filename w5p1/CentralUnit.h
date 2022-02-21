@@ -24,7 +24,7 @@ namespace sdds
 		size_t m_size{};//stores the number of individual units hosted by the central unit.
 		size_t m_count{};//stores the number of jobs queued upand waiting to be handled.
 	public:
-		//std::ostream& log;
+		std::ostream& log;
 		CentralUnit();
 		CentralUnit(const std::string type,const char* fileName);
 		//CentralUnit(T* hostCentralUnit, std::string type, char* fileName, unsigned int workCapacity);
@@ -62,25 +62,27 @@ namespace sdds
 	//}
 
 	template <typename T>
-	CentralUnit<T>::CentralUnit(const std::string type, const char* fileName) {
+	CentralUnit<T>::CentralUnit(const std::string type, const char* fileName) : log{std::cout} {
+		//log = std::cout;
 		std::ifstream file(fileName);
-		try {
+		//try {
 			if (!file)
 			{
-				throw std::invalid_argument("File cannot be opened");
+				throw std::invalid_argument("File cannot be opened.");
 			}
-		}
-		catch (std::invalid_argument) {
-
-		}
+		//}
+		//catch (std::invalid_argument error) {
+			//log << "**EXPECTED EXCEPTION: " <<  error.what() << std::endl;
+		//}
 		std::string record;
-		size_t count = 0;
+		//size_t count = 0; ????????????????????????????????????????????????????????????
 		// count how many records are in the file
 		do
 		{
 			std::getline(file, record);
 			if (file)
-				++count;
+				//++count; ?????????????????????????
+				++m_size;
 		} while (file);
 
 		//set file to the beginning
@@ -88,30 +90,60 @@ namespace sdds
 		file.seekg(std::ios::beg);
 		
 		std::string brand;
-		std::string model;
-		int coreNum;
+		std::string code; //code
+		int power; //power
 		size_t start_pos{};
 		size_t end_pos{};
-		for (size_t i = 0; i < count; i++)
+		for (size_t i = 0; i < m_size; i++)
 		{
 			try {
 				std::getline(file, record);
+				//brand
 				start_pos = findNonChar(record);
-				end_pos = findNonChar(record, true);
-				brand = record.substr(start_pos, end_pos);
-				start_pos = record.find('|');
-				record = record.substr(start_pos + 1);
+				record = record.substr(start_pos);
+				start_pos = 0;
+				//end_pos = findNonChar(record, true);
+				end_pos = record.find('|');
+				brand = record.substr(start_pos, end_pos - 1);
+				start_pos = 0;
+				brand = brand.substr(start_pos, findNonChar(brand, true) + 1);
+				std::cout << brand << " ";
+				//model
+				start_pos = end_pos + 1;
+				record = record.substr(start_pos);
 				start_pos = findNonChar(record);
-				end_pos = findNonChar(record, true);
-				model = record.substr(start_pos, end_pos);
-				start_pos = record.find('|');
-				record = record.substr(start_pos + 1);
-				coreNum = stoi(record);
+				record = record.substr(start_pos);
+				end_pos = record.find('|');
+				start_pos = 0;
+				code = record.substr(start_pos, end_pos - 1); //-1
+				start_pos = 0;
+				code = code.substr(start_pos, findNonChar(code, true) + 1);
+				std::cout << code << " ";
+				
+				//coreNum
+				start_pos = end_pos + 1;
+				record = record.substr(start_pos);
+				power = stoi(record);
+				std::cout << power << std::endl;
+
+				//start_pos = record.find('|');
+				//record = record.substr(start_pos + 1);
+				//start_pos = findNonChar(record);
+				//end_pos = findNonChar(record, true);
+				//model = record.substr(start_pos, end_pos);
+				//start_pos = record.find('|');
+				//record = record.substr(start_pos + 1);
+				//coreNum = stoi(record);
 				start_pos = 0;
 				end_pos = 0;
 			}
 			catch (std::exception& err) {
-				m_size = 0;//WORK_CAPACITY = 0; ???????????
+				//file.ignore(1000,'/n');
+				file.clear();
+				power = 1;//WORK_CAPACITY = 0; ???????????
+				start_pos = 0;
+				end_pos = 0;
+				std::cout << std::endl;
 			}
 
 		}
@@ -143,7 +175,7 @@ namespace sdds
 	}
 	template <typename T>
 	int CentralUnit<T>::get_available_units() {
-		return 0;
+		return m_size;
 		//return ????????????????????????????????????????????????
 	}
 	template <typename T>
@@ -151,25 +183,25 @@ namespace sdds
 
 	}
 	template <typename T>
-	CentralUnit<T>::CentralUnit(const CentralUnit& rightOperand) {
-		try {
+	CentralUnit<T>::CentralUnit(const CentralUnit& rightOperand) : log(std::cout) {
+		//try {
 			throw 1;
 			//throw std::exception;
-		}
-		catch (int i) {
+		//}
+		//catch (int i) {
 		//catch (std::exception) {
-
-		}
+			//throw std::exception;
+		//}
 		//throw compilte time error
 	} // copy constructor
 	template <typename T>
 	CentralUnit<T>& CentralUnit<T>::operator=(const CentralUnit<T>& rightOperand) {
-		try {
+		//try {
 			throw std::exception;
-		}
-		catch (std::exception) {
+		//}
+		//catch (std::exception) {
 
-		}
+		//}
 		//throw compilte time error
 	} // copy assignment operator
 
