@@ -24,16 +24,18 @@ namespace sdds
 	Processor::Processor(CentralUnit<Processor>* hostCentralUnit, std::string brand, std::string code, int power) :
 		m_host{ hostCentralUnit }, m_brand{ brand }, m_code{ code }, m_power{power}
 	{
-		m_host = hostCentralUnit;
 	}
 	void Processor::run() {
-
+		//handle run
 	}
 	Processor::operator bool() const {
-		return false;
+		return m_current;
 	}
-	Processor& Processor::operator+=(Job*&) {
-		//some code
+	Processor& Processor::operator+=(Job*& job) {
+		if (this) {
+			throw exception();
+		}
+		m_current = job;
 		return *this;
 	}
 	Job* Processor::get_current_job() const {

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include "Job.h"
+#include "Processor.h"
 namespace sdds
 {
 	template <typename T>
@@ -27,14 +28,13 @@ namespace sdds
 		std::ostream& log;
 		CentralUnit();
 		CentralUnit(const std::string type,const char* fileName);
-		//CentralUnit(T* hostCentralUnit, std::string type, char* fileName, unsigned int workCapacity);
 		~CentralUnit();
 		CentralUnit(const CentralUnit& rightOperand); // copy constructor
 		CentralUnit& operator=(const CentralUnit& rightOperand); // copy assignment operator
 		CentralUnit& operator+=(const std::string jobName);
 		void run();
 		bool has_jobs()const; /// ????????????????
-		int get_available_units();
+		size_t get_available_units();
 	};
 
 	static size_t findNonChar(std::string str, bool reversed = false) {
@@ -56,13 +56,9 @@ namespace sdds
 	template <typename T>
 	CentralUnit<T>::CentralUnit() {}
 
-	//template <typename T>
-	//CentralUnit<T>::CentralUnit(T* hostCentralUnit, std::string type, char* fileName, unsigned int workCapacity) {
-
-	//}
-
+	//T or Processor template
 	template <typename T>
-	CentralUnit<T>::CentralUnit(const std::string type, const char* fileName) : log{std::cout} {
+	CentralUnit<T>::CentralUnit(const std::string type, const char* fileName) : m_type{type}, log{ std::cout } {
 		//log = std::cout;
 		std::ifstream file(fileName);
 		//try {
@@ -75,20 +71,23 @@ namespace sdds
 			//log << "**EXPECTED EXCEPTION: " <<  error.what() << std::endl;
 		//}
 		std::string record;
-		//size_t count = 0; ????????????????????????????????????????????????????????????
+		size_t count = 0; 
 		// count how many records are in the file
 		do
 		{
 			std::getline(file, record);
 			if (file)
 				//++count; ?????????????????????????
-				++m_size;
+				++count;
 		} while (file);
 
 		//set file to the beginning
 		file.clear();
 		file.seekg(std::ios::beg);
 		
+		m_size = count;
+		m_items = Processor*[m_size];
+
 		std::string brand;
 		std::string code; //code
 		int power; //power
@@ -107,7 +106,7 @@ namespace sdds
 				brand = record.substr(start_pos, end_pos - 1);
 				start_pos = 0;
 				brand = brand.substr(start_pos, findNonChar(brand, true) + 1);
-				std::cout << brand << " ";
+				//std::cout << brand << " ";
 				//model
 				start_pos = end_pos + 1;
 				record = record.substr(start_pos);
@@ -118,13 +117,13 @@ namespace sdds
 				code = record.substr(start_pos, end_pos - 1); //-1
 				start_pos = 0;
 				code = code.substr(start_pos, findNonChar(code, true) + 1);
-				std::cout << code << " ";
+				//std::cout << code << " ";
 				
 				//coreNum
 				start_pos = end_pos + 1;
 				record = record.substr(start_pos);
 				power = stoi(record);
-				std::cout << power << std::endl;
+				//std::cout << power << std::endl;
 
 				//start_pos = record.find('|');
 				//record = record.substr(start_pos + 1);
@@ -137,50 +136,60 @@ namespace sdds
 				start_pos = 0;
 				end_pos = 0;
 			}
-			catch (std::exception& err) {
+			catch (std::exception) {
 				//file.ignore(1000,'/n');
 				file.clear();
 				power = 1;//WORK_CAPACITY = 0; ???????????
 				start_pos = 0;
 				end_pos = 0;
-				std::cout << std::endl;
+				//std::cout << std::endl;
 			}
-
+			//T[i] = new Processor(T[i], brand, code, power);
+			m_items[i] = new Processor(this, brand, code, power);
 		}
 	}
 	template <typename T>
-	CentralUnit<T>& CentralUnit<T>::operator+=(const std::string) {
-		try {
-			if (m_count > 4)
-				throw 1;
+	CentralUnit<T>& CentralUnit<T>::operator+=(const std::string jobName) {
+		//try {
+			if (m_count >= 4)
+				throw std::exception();
 			//Job newJob = new Job();
-			m_jobs[m_count] = new Job;
-		}
-		catch(int i) {
-			std::cout << "STRING ERROR" << std::endl;
-		}
+			m_jobs[m_count++] = new Job(jobName);
+		//}
+		//catch(int i) {
+			//std::cout << "STRING ERROR" << std::endl;
+		//}
 		return *this;
 	}
-	template <typename T>
-	void CentralUnit<T>::run() { 
+	//template <typename T>
+	//void CentralUnit<T>::run() { 
+	//	for (size_t i = 0; i < m_count; i++)
+	//	{
+
+	//		// ???????????????????????????????????????????????????????????????????
+	//	}
+	//}
+	template <>
+	void CentralUnit<Processor>::run() {
 		for (size_t i = 0; i < m_count; i++)
 		{
+			std::cout << m_items[i]->get_current_job();
 			// ???????????????????????????????????????????????????????????????????
 		}
 	}
 	template <typename T>
 	bool CentralUnit<T>::has_jobs()const {
-		return false;
+		return m_count > 0;
 		// return ???????????????????????????????????????????????????
 	}
 	template <typename T>
-	int CentralUnit<T>::get_available_units() {
+	size_t CentralUnit<T>::get_available_units() {
 		return m_size;
 		//return ????????????????????????????????????????????????
 	}
 	template <typename T>
 	CentralUnit<T>::~CentralUnit() {
-
+		delete[] m_items;
 	}
 	template <typename T>
 	CentralUnit<T>::CentralUnit(const CentralUnit& rightOperand) : log(std::cout) {

@@ -25,7 +25,7 @@ namespace sdds
 		Processor(CentralUnit<Processor>* hostCentralUnit, std::string brand, std::string code, int power);
 		void run();
 		explicit operator bool() const;
-		Processor& operator+=(Job*&);
+		Processor& operator+=(Job*& job);
 		Job* get_current_job() const;
 	};
 }
