@@ -86,7 +86,7 @@ namespace sdds
 		file.seekg(std::ios::beg);
 		
 		m_size = count;
-		m_items = Processor*[m_size];
+		m_items = T*[m_size];
 
 		std::string brand;
 		std::string code; //code
@@ -145,7 +145,7 @@ namespace sdds
 				//std::cout << std::endl;
 			}
 			//T[i] = new Processor(T[i], brand, code, power);
-			m_items[i] = new Processor(this, brand, code, power);
+			dynamic_cast<Processor>(m_items[i]) = new Processor(this, brand, code, power);
 		}
 	}
 	template <typename T>
