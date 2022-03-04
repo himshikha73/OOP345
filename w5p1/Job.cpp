@@ -21,7 +21,8 @@ namespace sdds
 
 	}
 	Job::Job(std::string title) {
-		m_workUnits = (m_remainUnits % 10) + 1;
+		//m_workUnits = (m_remainUnits % 10) + 1;
+		m_workUnits = (m_title.length() % 10) + 1;
 	} //(m_title.length() % 10) + 1
 	bool Job::is_active() {
 		return m_active;

@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CentralUnit.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="Processor.cpp" />
     <ClCompile Include="w5_p1.cpp" />

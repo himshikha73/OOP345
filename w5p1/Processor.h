@@ -27,6 +27,7 @@ namespace sdds
 		explicit operator bool() const;
 		Processor& operator+=(Job*& job);
 		Job* get_current_job() const;
+		~Processor();
 	};
 }
 #endif // !SDDS_PROCESSOR_H_

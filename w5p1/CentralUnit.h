@@ -34,7 +34,7 @@ namespace sdds
 		CentralUnit& operator+=(const std::string jobName);
 		void run();
 		bool has_jobs()const; /// ????????????????
-		size_t get_available_units();
+		size_t get_available_units()const;
 	};
 
 	static size_t findNonChar(std::string str, bool reversed = false) {
@@ -85,8 +85,11 @@ namespace sdds
 		file.clear();
 		file.seekg(std::ios::beg);
 		
+		if (count == 0)
+			throw std::string("No units provided"); // mIght be redundant
+
 		m_size = count;
-		m_items = T*[m_size];
+		m_items  = T*[m_size];
 
 		std::string brand;
 		std::string code; //code
@@ -145,14 +148,14 @@ namespace sdds
 				//std::cout << std::endl;
 			}
 			//T[i] = new Processor(T[i], brand, code, power);
-			dynamic_cast<Processor>(m_items[i]) = new Processor(this, brand, code, power);
+			dynamic_cast<Processor>(m_items[i]) = new Processor(&this, brand, code, power);
 		}
 	}
 	template <typename T>
 	CentralUnit<T>& CentralUnit<T>::operator+=(const std::string jobName) {
 		//try {
 			if (m_count >= 4)
-				throw std::exception();
+				throw std::exception("Job queue is full  ");
 			//Job newJob = new Job();
 			m_jobs[m_count++] = new Job(jobName);
 		//}
@@ -171,22 +174,34 @@ namespace sdds
 	//}
 	template <>
 	void CentralUnit<Processor>::run() {
-		for (size_t i = 0; i < m_count; i++)
+		//for (size_t i = 0; i < m_count; i++)
+		for (size_t i = 0; i < m_size; i++)
 		{
-			std::cout << m_items[i]->get_current_job();
+			if (*m_items[i] && m_count > 0) {
+				*m_items[i] += m_jobs[m_count--];
+				m_jobs[m_count] = nullptr;
+			}
+			m_items[i]->run();
+			//std::cout << m_items[i]->get_current_job();
+			//std::cout << dynamic_cast<Processor>(m_items[i]).run();
 			// ???????????????????????????????????????????????????????????????????
 		}
 	}
 	template <typename T>
 	bool CentralUnit<T>::has_jobs()const {
-		return m_count > 0;
+		//get_available_units != m_size
+		return m_count != 0 || get_available_units != m_size; // &&
 		// return ???????????????????????????????????????????????????
 	}
 	template <typename T>
-	size_t CentralUnit<T>::get_available_units() {
-		return m_size;
+	size_t CentralUnit<T>::get_available_units() const {
+		size_t count = 0;
+		while (m_items[count++]);
+		
+		return count;
+		//return m_size;
 		//return ????????????????????????????????????????????????
-	}
+	} 
 	template <typename T>
 	CentralUnit<T>::~CentralUnit() {
 		delete[] m_items;
