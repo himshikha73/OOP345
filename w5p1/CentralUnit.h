@@ -11,6 +11,8 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
+
 #include "Job.h"
 #include "Processor.h"
 namespace sdds
@@ -21,12 +23,13 @@ namespace sdds
 	private:
 		std::string m_type{};
 		T** m_items{}; //a dynamically-allocated array of pointers to individual units of type T (i.e. any type). These are the units that will be hosted in the CentralUnit object.
-		Job* m_jobs[4]; // a statically-allocated array of pointers to jobs that are queued up and waiting to be handled by an individual unit when the central unit is run. Only a maximum of 4 jobs can be queued up at any given time.
+		Job* m_jobs[4]{}; // a statically-allocated array of pointers to jobs that are queued up and waiting to be handled by an individual unit when the central unit is run. Only a maximum of 4 jobs can be queued up at any given time.
 		size_t m_size{};//stores the number of individual units hosted by the central unit.
 		size_t m_count{};//stores the number of jobs queued upand waiting to be handled.
 	public:
-		std::ostream& log;
-		CentralUnit();
+		static std::ostream& log;
+
+		//CentralUnit();
 		CentralUnit(const std::string type,const char* fileName);
 		~CentralUnit();
 		CentralUnit(const CentralUnit& rightOperand); // copy constructor
@@ -36,6 +39,9 @@ namespace sdds
 		bool has_jobs()const; /// ????????????????
 		size_t get_available_units()const;
 	};
+
+	template <typename T>
+	std::ostream& CentralUnit<T>::log = std::cout;
 
 	static size_t findNonChar(std::string str, bool reversed = false) {
 		if (reversed) {
@@ -53,12 +59,12 @@ namespace sdds
 		return 0;
 	}
 
-	template <typename T>
-	CentralUnit<T>::CentralUnit() {}
+	//template <typename T>
+	//CentralUnit<T>::CentralUnit() {}
 
 	//T or Processor template
 	template <typename T>
-	CentralUnit<T>::CentralUnit(const std::string type, const char* fileName) : m_type{type}, log{ std::cout } {
+	CentralUnit<T>::CentralUnit(const std::string type, const char* fileName) : m_type{type} {
 		//log = std::cout;
 		std::ifstream file(fileName);
 		//try {

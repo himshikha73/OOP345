@@ -17,35 +17,33 @@
 using namespace std;
 namespace sdds
 {
-	Job::Job() {
-
-	}
+	
 	Job::Job(std::string title) {
-		//m_workUnits = (m_remainUnits % 10) + 1;
-		m_workUnits = (m_title.length() % 10) + 1;
+		if (!title.empty()) {
+			//m_workUnits = (m_remainUnits % 10) + 1;
+			m_workUnits = (m_title.length() % 10) + 1;
+			m_remainUnits = m_workUnits;
+		}
 	} //(m_title.length() % 10) + 1
-	bool Job::is_active() {
+	bool Job::is_active()const {
 		return m_active;
 	}
-	bool Job::is_complete() {
-		return m_workUnits == 0;
+	bool Job::is_complete() const{
+		return m_remainUnits == 0u;
 	} //return m_workUnit == 0;
-	std::string Job::name() {
+	std::string Job::name() const{
 		return m_title;
 	} //return new String(m_title);
-	auto Job::operator()(unsigned int workUnits) {
-		try {
-			if (workUnits > m_remainUnits) {
-				m_remainUnits = 0;
-				throw std::underflow_error("error"); // ????
-			}
-			m_remainUnits -= m_workUnits;
-			if (m_remainUnits == 0)
-				m_active = false;
+	void Job::operator()(size_t workUnits) {
+		m_active = true;
+		if (workUnits > m_remainUnits) {
+			m_remainUnits = 0;
+			m_active = false;
+			throw std::underflow_error(string("Job has only ") + to_string(m_remainUnits) + " workunits remaining"); // ????
 		}
-		catch (std::underflow_error) {
-
-		}
+		m_remainUnits -= m_workUnits;
+		if (m_remainUnits == 0)
+			m_active = false;
 	} //m_remainUnits-workUnits, if(m_remainUnits == 0) m_active = false; if(workUnits > m_remainUnits) m_remainUnits = 0; + std::underflow_error
 	void Job::display(std::ostream& ostr) {
 		ostr << "`" << m_title << "`[";
@@ -61,6 +59,8 @@ namespace sdds
 
 		//`JOB NAME`[XX / XX remaining]
 	}
+
+
 	
 	std::ostream& operator<<(std::ostream& ostr, Job& rightOperand) {
 		rightOperand.display(ostr);
