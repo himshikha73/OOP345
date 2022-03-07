@@ -21,9 +21,12 @@ namespace sdds
 	Job::Job(std::string title) {
 		if (!title.empty()) {
 			//m_workUnits = (m_remainUnits % 10) + 1;
-			m_workUnits = (m_title.length() % 10) + 1;
+			m_title = title;
+			/*int len = m_title.length();*/
+			m_workUnits = (m_title.length() % 10) + 1; //+1;
 			m_remainUnits = m_workUnits;
 		}
+		
 	} //(m_title.length() % 10) + 1
 	bool Job::is_active()const {
 		return m_active;
@@ -46,12 +49,12 @@ namespace sdds
 			m_active = false;
 	} //m_remainUnits-workUnits, if(m_remainUnits == 0) m_active = false; if(workUnits > m_remainUnits) m_remainUnits = 0; + std::underflow_error
 	void Job::display(std::ostream& ostr) {
-		ostr << "`" << m_title << "`[";
+		ostr << "`" << m_title << "` [";
 		ostr.fill('0');
 		ostr.setf(ios::right);
 		ostr.width(2);
 		ostr << m_remainUnits;
-		ostr << " / ";
+		ostr << "/";
 		ostr.width(2);
 		ostr << m_workUnits;
 		ostr << " remaining]" << endl;
