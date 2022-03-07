@@ -164,7 +164,7 @@ namespace sdds
 	CentralUnit<T>& CentralUnit<T>::operator+=(const std::string jobName) {
 		//try {
 			if (m_count >= 4)
-				throw std::exception("Job queue is full  ");
+				throw std::string("Job queue is full");
 			//Job newJob = new Job();
 			m_jobs[m_count++] = new Job(jobName);
 		//}
@@ -173,22 +173,6 @@ namespace sdds
 		//}
 		return *this;
 	}
-
-	//template <> //specialization
-	//void CentralUnit<Processor>::run() {
-	//	//for (size_t i = 0; i < m_count; i++)
-	//	for (size_t i = 0; i < m_size; i++)
-	//	{
-	//		if (*m_items[i] && m_count > 0) {
-	//			*m_items[i] += m_jobs[m_count--];
-	//			m_jobs[m_count] = nullptr;
-	//		}
-	//		m_items[i]->run();
-	//		//std::cout << m_items[i]->get_current_job();
-	//		//std::cout << dynamic_cast<Processor>(m_items[i]).run();
-	//		// ???????????????????????????????????????????????????????????????????
-	//	}
-	//}
 
 	template <typename T>
 	void CentralUnit<T>::run() {
@@ -215,12 +199,12 @@ namespace sdds
 	//	for (auto i = 0u; i < this->m_size; ++i)
 	//	{
 	//		T& currentUnit = *(this->m_items[i]);
-	//		if (this->m_count > 0 && this->m_count <= MAX_JOB && (bool)(*m_items[i]) == false)
+	//		if (this->m_count > 0 && this->m_count <= 4 && (bool)(*m_items[i]) == false)
 	//		{
-	//			Job* lastJob = this->m_job[m_count - 1];
+	//			Job* lastJob = this->m_jobs[m_count - 1];
 	//			currentUnit += lastJob;
 	//			--m_count;
-	//			this->m_job[m_count] = nullptr;
+	//			this->m_jobs[m_count] = nullptr;
 	//		}
 	//		currentUnit.run();
 	//	}
@@ -229,7 +213,7 @@ namespace sdds
 	template <typename T>
 	bool CentralUnit<T>::has_jobs()const {
 		//get_available_units != m_size
-		return m_count != 0 || this->get_available_units() != m_size; // &&
+		return m_count != 0 || get_available_units() != m_size; // &&
 		// return ???????????????????????????????????????????????????
 		//return false;
 	}
@@ -252,7 +236,7 @@ namespace sdds
 		size_t count = 0;
 		size_t flag = m_size;
 		while (flag)
-			if (m_items[--flag])
+			if (!m_items[--flag]->get_current_job())
 				count++;
 			//count++;
 		
@@ -270,6 +254,11 @@ namespace sdds
 			delete m_items[i];
 		}
 		delete[] m_items;
+		//for (size_t i = 0; i < m_count; i++)
+		//{
+		//	delete m_jobs[i];
+		//}
+		//delete[] m_jobs;
 	}
 
 	// copy constructor
@@ -301,11 +290,11 @@ namespace sdds
 			}
 			delete[] m_items;
 
-			for (size_t i = 0; i < m_count; i++)
-			{
-				delete m_jobs[i];
-			}
-			delete[] m_jobs;
+			//for (size_t i = 0; i < m_count; i++)
+			//{
+			//	delete m_jobs[i];
+			//}
+			//delete[] m_jobs;
 
 			m_count = rightOperand.m_count;
 			m_size = rightOperand.m_size;

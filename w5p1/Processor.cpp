@@ -28,6 +28,7 @@ namespace sdds
 					m_current->operator()(m_power);
 				}
 				else {
+					delete m_current;
 					m_current = nullptr;
 				}
 			}

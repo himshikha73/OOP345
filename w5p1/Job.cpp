@@ -12,13 +12,15 @@
 //#include <iterator>
 //#include <iostream>
 #include <cstring>
+#include <stdexcept>
 //#include <iomanip>
 #include "Job.h"
+
 using namespace std;
 namespace sdds
 {
 	
-	Job::Job(std::string title) {
+	Job::Job(string title) {
 		if (!title.empty()) {
 			//m_workUnits = (m_remainUnits % 10) + 1;
 			m_title = title;
@@ -34,7 +36,7 @@ namespace sdds
 	bool Job::is_complete() const{
 		return m_remainUnits == 0u;
 	} //return m_workUnit == 0;
-	std::string Job::name() const{
+	string Job::name() const{
 		return m_title;
 	} //return new String(m_title);
 	void Job::operator()(size_t workUnits) {
@@ -42,13 +44,14 @@ namespace sdds
 		if (workUnits > m_remainUnits) {
 			m_remainUnits = 0;
 			m_active = false;
-			throw std::underflow_error(string("Job has only ") + to_string(m_remainUnits) + " workunits remaining"); // ????
+			throw underflow_error(string("Job has only ") + to_string(m_remainUnits) + " workunits remaining"); // ????
 		}
-		m_remainUnits -= m_workUnits;
+		//m_remainUnits -= m_workUnits;
+		m_remainUnits -= workUnits;
 		if (m_remainUnits == 0)
 			m_active = false;
 	} //m_remainUnits-workUnits, if(m_remainUnits == 0) m_active = false; if(workUnits > m_remainUnits) m_remainUnits = 0; + std::underflow_error
-	void Job::display(std::ostream& ostr) {
+	void Job::display(ostream& ostr) {
 		ostr << "`" << m_title << "` [";
 		ostr.fill('0');
 		ostr.setf(ios::right);
@@ -65,7 +68,7 @@ namespace sdds
 
 
 	
-	std::ostream& operator<<(std::ostream& ostr, Job& rightOperand) {
+	ostream& operator<<(ostream& ostr, Job& rightOperand) {
 		rightOperand.display(ostr);
 		return ostr;
 	}
