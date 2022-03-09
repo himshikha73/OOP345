@@ -36,7 +36,6 @@ namespace sdds
 		void on_error(std::function<void(Processor* proc)> func);
 		Job* free();
 		void display(std::ostream& ostr)const;
-		//~Processor();
 		friend std::ostream& operator<<(std::ostream& ostr, const Processor& rightOperand);
 
 	};

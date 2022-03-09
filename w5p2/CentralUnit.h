@@ -45,10 +45,12 @@ namespace sdds
 	template <typename T>
 	void CentralUnit<T>::complete_job(CentralUnit<T>& host, T* unit) {
 
+		Job* newJob = unit->free();
 		log << "[COMPLETE] ";
-		log << *(unit->free());
+		log << *(newJob);
 		log << " using " << *unit << std::endl;
 		log << host.get_available_units() << " units available." << std::endl;
+		delete newJob;
 	}
 
 	template <typename T>
@@ -98,8 +100,8 @@ namespace sdds
 		m_items = new T* [m_size];
 
 		std::string brand;
-		std::string code; //code
-		int power; //power
+		std::string code;
+		int power;
 		size_t start_pos{};
 		size_t end_pos{};
 		for (size_t i = 0; i < m_size; i++)
@@ -206,8 +208,6 @@ namespace sdds
 		return m_count != 0 || get_available_units() != m_size;
 	}
 
-
-
 	template <typename T>
 	size_t CentralUnit<T>::get_available_units() const {
 		size_t count = 0;
@@ -253,7 +253,6 @@ namespace sdds
 			m_count = rightOperand.m_count;
 			m_size = rightOperand.m_size;
 			m_type = rightOperand.m_type;
-			m_type = rightOperand.m_type;
 
 			m_items = rightOperand.m_items;
 			m_jobs = rightOperand.m_jobs;
@@ -289,7 +288,7 @@ namespace sdds
 				});
 		}
 		else {
-			throw std::string("Proc not available");
+			throw std::string("Processor not available");
 		}
 		return *this;
 	}
