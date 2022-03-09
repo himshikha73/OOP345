@@ -18,10 +18,10 @@
     <ClInclude Include="CentralUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Job.h">
+    <ClInclude Include="Processor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Processor.h">
+    <ClInclude Include="Job.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

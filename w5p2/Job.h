@@ -2,7 +2,7 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           20.02.2022
+// Date:           08.03.2022
 //==============================================
 
 #ifndef SDDS_JOB_H_
@@ -20,12 +20,12 @@ namespace sdds
 		bool m_active{};
 	public:
 		Job() = default;
-		Job(std::string title); //(m_title.length() % 10) + 1
-		bool is_active()const ;
-		bool is_complete()const ; //return m_workUnit == 0;
-		std::string name()const ; //return new String(m_title);
+		Job(std::string title);
+		bool is_active()const;
+		bool is_complete()const;
+		std::string name()const;
 		void display(std::ostream& ostr);
-		void operator()(size_t workUnits); //m_remainUnits-workUnits, if(m_remainUnits == 0) m_active = false; if(workUnits > m_remainUnits) m_remainUnits = 0; + std::underflow_error
+		void operator()(size_t workUnits);
 	};
 	std::ostream& operator<<(std::ostream& ostr, Job& rightOperand);
 }

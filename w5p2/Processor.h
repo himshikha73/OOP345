@@ -2,7 +2,7 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           20.02.2022
+// Date:           08.03.2022
 //==============================================
 
 #ifndef SDDS_PROCESSOR_H_
@@ -32,9 +32,9 @@ namespace sdds
 		Processor& operator+=(Job*& job);
 		Job* get_current_job() const;
 		void operator()();
-		void on_complete(void (*act)(CentralUnit<Processor>& hostCentralUnit, Processor* proc));
+		void on_complete(void (*act)(CentralUnit<Processor>& centrUnit, Processor* proc)); // might be names
 		void on_error(std::function<void(Processor* proc)> func);
-		Job* free(Processor* proc);
+		Job* free();
 		void display(std::ostream& ostr)const;
 		//~Processor();
 		friend std::ostream& operator<<(std::ostream& ostr, const Processor& rightOperand);

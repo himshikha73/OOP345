@@ -3,27 +3,22 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           20.02.2022
+// Date:           08.03.2022
 //==============================================
 
 #define  _CRT_SECURE_NO_WARNINGS
-//#include <string>
-//#include <algorithm>
-//#include <iterator>
 #include <iostream>
-//#include <cstring>
-//#include <iomanip>
 #include "Processor.h"
 using namespace std;
 namespace sdds
 {
 	Processor::Processor(CentralUnit<Processor>* hostCentralUnit, std::string brand, std::string code, size_t power) :
-		m_host{ hostCentralUnit }, m_brand{ brand }, m_code{ code }, m_power{power}
+		m_host{ hostCentralUnit }, m_brand{ brand }, m_code{ code }, m_power{power} 
 	{
 	}
 	void Processor::run() {
 		try {
-			if (m_host && m_current) { //delete nullptr
+			if (m_host && m_current) {
 				if (!m_current->is_complete()) {
 					m_current->operator()(m_power);
 				}
@@ -37,51 +32,57 @@ namespace sdds
 		catch (std::underflow_error) {
 			cout << "Processed over quota for " << *(m_current);
 			delete m_current;
-			m_current = nullptr; //might be redundant
+			m_current = nullptr;
 		}
-		//handle run
 	}
 
 	Processor::operator bool() const {
+
 		return !m_current;
 	}
 	Processor& Processor::operator+=(Job*& job) {
 		if (m_current) {
 			throw exception();
 		}
-		//if(m_current == nullptr)
 			m_current = job;
 		return *this;
 	}
 	Job* Processor::get_current_job() const {
 		return m_current;
 	}
-
-	void Processor::on_complete(void (*act)(CentralUnit<Processor>& hostCentralUnit, Processor* proc)) {
-		//???????????
+	void Processor::on_complete(void(*act)(CentralUnit<Processor>& centrUnit, Processor* proc))
+	{
+		m_act = act;
 	}
 	void Processor::on_error(std::function<void(Processor* proc)> func) {
-		//delete func.;
-		//m_current = nullptr;
+		m_func = func;
 	}
-	Job* Processor::free(Processor* proc) {
-
-		proc->m_current = nullptr;
-		return proc->m_current;
+	Job* Processor::free() {
+		Job* newJob = m_current;
+		m_current = nullptr;
+		return newJob;
 	}
 
 	void Processor::operator()() {
-		if (!m_current) {
-			
+		if (m_current && !m_current->is_complete()) {
+			try {
+				m_current->operator()(m_power);
+				if (m_act && m_current->is_complete())
+					m_act(*m_host, this);
+			}
+			catch (std::underflow_error&) {
+				if(m_func)
+					m_func(this);
+			}
 		}
-		run();
-	};
+	}
 
 	void Processor::display(ostream& ostr)const {
-		cout << "(" << m_power << ") " << m_brand << " " << m_code << " processing";
-		if (m_current)
+		ostr << "(" << m_power << ") " << m_brand << " " << m_code;
+		if (m_current) {
+			ostr << " processing ";
 			m_current->display(ostr);
-		//(POWER) BRAND CODE processing CURRENT_JOB_DETAILS
+		}
 	}
 
 	ostream& operator<<(ostream& ostr, const Processor& rightOperand) {
