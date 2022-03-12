@@ -29,7 +29,7 @@ namespace sdds
 			}
 			
 		}
-		catch (std::underflow_error) {
+		catch (std::underflow_error&) {
 			cout << "Processed over quota for " << *(m_current);
 			delete m_current;
 			m_current = nullptr;

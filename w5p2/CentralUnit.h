@@ -132,7 +132,7 @@ namespace sdds
 				record = record.substr(start_pos);
 				power = stoi(record);
 			}
-			catch (std::exception) {
+			catch (...) {
 
 				file.clear();
 				power = 1;
@@ -177,7 +177,7 @@ namespace sdds
 
 	template <typename T>
 	void CentralUnit<T>::display()const {
-		log << "Central" << m_type << " Unit list" << std::endl;
+		log << "Central " << m_type << " Unit list" << std::endl;
 		for (size_t i = 0; i < m_size; i++)
 		{
 			log << "[";
@@ -199,7 +199,7 @@ namespace sdds
 			if (m_items[i]->get_current_job()->name() == str) 
 				return m_items[i];
 		} 
-		throw std::out_of_range("Job is not being handled by a unit");
+		throw std::out_of_range("Job is not being handled by a unit.");
 		return nullptr;
 	}
 	
