@@ -25,7 +25,7 @@ namespace sdds
 		
 	};
 	string File::path() const {
-		return m_parent_path + m_name; //check it
+		return m_parent_path; //check it
 	}
 	std::string File::name() const {
 		return m_name;

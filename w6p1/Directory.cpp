@@ -68,50 +68,32 @@ namespace sdds
 		else throw std::exception();
 		
 	}
-	//Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag = {}) {
-	//	if (flag.empty()) {
-	//		for (auto i : m_contents) {
-	//			if (m_name == i.name())
-	//				return &i;
-	//		}
-	//	}
-	//	else {
-	//		find
-	//	}
-	//	return nullptr;
-	//}
-	//Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag) {
-	//	for (auto i : m_contents) {
-	//		if (m_name == i.name())
-	//			return &i;
-	//	}
-	//	if(!flag.empty()) {
-	//		find(name);
-	//	}
-	//	return nullptr;
-	//}
+	Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag) {
+		Resource* temp{};
+		for (auto i : m_contents) {
+			if (!flag.empty() && flag[0] == OpFlags::RECURSIVE) {
+				if (i->type() == NodeType::DIR)
+					temp = dynamic_cast<Directory*>(i)->find(name, flag);
+			}
+			if (name == i->name()) //m_name
+				return i;
+		}
+		return temp;
+	}
 	//Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag) {
 	//	Resource* temp{};
-	//	for (int i = 0; i < count(); i++) {
-	//		if (m_contents[i].type() == NodeType::DIR)
-	//			temp = find(name, flag);
-	//		if (m_name == m_contents[i].name())
-	//			temp = &m_contents[i];
+	//	for (auto i : m_contents) {
+	//		if (!flag.empty() && flag[0] == OpFlags::RECURSIVE)
+	//			if (i->type() == NodeType::DIR)
+	//				temp = dynamic_cast<Directory*>(i)->find(name, flag);
+	//		if (name == i->name()) //m_name
+	//			//temp = i;
+	//			return i;
 	//	}
 	//	return temp;
 	//}
-	Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag) {
-		Resource* temp{};
-			for (auto i : m_contents) {
-				if (i->type() == NodeType::DIR)
-					temp = find(name, flag);
-				if (name == i->name()) //m_name
-					//temp = i;
-					return i;
-			}
-		return temp;
-	}
 	Directory::~Directory() {
 
 	}
+
 };
