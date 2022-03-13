@@ -22,7 +22,7 @@ namespace sdds
 	//sets the parent path to the parameter.
 	void Directory::update_parent_path(const string& parent_path) {
 		//m_parent_path = m_parent_path + m_name + parent_path;
-		for (size_t i = 0; i < count(); i++)
+		for (int i = 0; i < count(); i++)
 		{
 			m_contents[i]->update_parent_path(path());// might be . insetead of ->
 		}
@@ -47,7 +47,7 @@ namespace sdds
 	size_t Directory::size() const {
 		if (!m_contents.empty()) {
 			size_t size = 0;
-			for (size_t i = 0; i < count(); i++)
+			for (int i = 0; i < count(); i++)
 			{
 				size += m_contents[i]->size();
 			}
@@ -64,9 +64,9 @@ namespace sdds
 			m_contents.push_back(res);
 			//update_parent_path(res->path());
 			update_parent_path(res->name());
+			return *this;
 		}
-		else throw std::exception();
-		
+		else throw std::exception();	
 	}
 	Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag) {
 		Resource* temp{};
