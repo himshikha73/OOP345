@@ -152,6 +152,7 @@ namespace sdds
 			//start_pos = 0;
 			//content = content.substr(start_pos, findNonWhiteSpace(content, true) + 1);
 		}
+		m_current = m_root;
 	}
 	Directory* Filesystem::change_directory(const std::string& name) {
 		if (name.empty()) {
@@ -163,8 +164,7 @@ namespace sdds
 				throw std::invalid_argument("Cannot change directory! " + name + " not found!");
 			return newDir;
 		}
-
-
+		return m_current;
 	}
 	Directory* Filesystem::get_current_directory() const {
 		return m_current;

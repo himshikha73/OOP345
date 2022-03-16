@@ -37,6 +37,5 @@ namespace sdds
 		return m_contents.length();
 	}
 	File::~File() {
-
 	}
 }

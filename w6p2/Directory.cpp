@@ -95,7 +95,7 @@ namespace sdds
 		temp = nullptr;
 		for (size_t i = 0; i < count(); i++)
 		{
-			if (m_contents[i])
+			if (!m_contents[i])
 				m_contents.erase(m_contents.begin() + i);
 		}
 		//----------------------------------------------------------------------------------
@@ -161,11 +161,18 @@ namespace sdds
 			if (!flag.empty()) {
 				ostr.width(2);
 				ostr.setf(ios::right);
-				ostr << count();
+				if(m_contents[i]->type() == NodeType::DIR)
+					ostr << m_contents[i]->count();
+				else ostr << ' ';
+				ostr << " | ";
+				//---------------------
+				ostr.width(4);
+				ostr << m_contents[i]->size();
+				ostr << " bytes";
+				ostr << " | ";
+				ostr.unsetf(ios::right);
 			}
-			ostr.width(10);
-			ostr << size(); 
-			ostr.unsetf(ios::right);
+			ostr << endl;
 		}
 	}
 	//Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag) {
