@@ -9,6 +9,7 @@
 #define  _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <exception>
+#include <stdexcept>
 #include "Directory.h"
 #include "Resource.h"
 #include "File.h"
@@ -21,22 +22,18 @@ namespace sdds
 	}
 	//sets the parent path to the parameter.
 	void Directory::update_parent_path(const string& parent_path) {
-		//m_parent_path = m_parent_path + m_name + parent_path;
+		m_parent_path = parent_path;
 		for (int i = 0; i < count(); i++)
 		{
-			m_contents[i]->update_parent_path(path());// might be . insetead of ->
+			m_contents[i]->update_parent_path(m_parent_path);// might be . insetead of ->
 		}
-		//for (auto i : m_contents)
-		//{
-		//	i.m_parent_path = path(); //?????
-		//}
 	}
 	NodeType Directory::type() const {
 		return NodeType::DIR;
 
 	};
 	string Directory::path() const {
-		return m_parent_path; // might be without name, it create double / (m_parent_path + m_name)
+		return m_parent_path + name(); // might be without name, it create double / (m_parent_path + m_name)
 	}
 	std::string Directory::name() const {
 		return m_name;
@@ -63,7 +60,7 @@ namespace sdds
 		if (!find(res->name())) {
 			m_contents.push_back(res);
 			//update_parent_path(res->path());
-			update_parent_path(res->name());
+			res->update_parent_path(path()); //path()
 			return *this;
 		}
 		else throw std::exception();	
@@ -82,7 +79,6 @@ namespace sdds
 	}
 	void Directory::remove(const std::string& name, const std::vector<OpFlags>& flag) {
 		Resource* temp{};
-		bool found = false;
 
 		temp = find(name, flag);
 		if(!temp)
@@ -91,7 +87,7 @@ namespace sdds
 			if(flag.empty())
 				throw std::invalid_argument(name + " is a directory.Pass the recursive flag to delete directories.");
 		}
-		for (size_t i = 0; i < count(); i++)
+		for (int i = 0; i < count(); i++)
 		{
 			if (m_contents[i]->name() == temp->name()) {
 				delete temp;
@@ -100,58 +96,10 @@ namespace sdds
 			}
 		}
 
-
-
-		//----------------------------------------------------------------------------------
-		//for (size_t i = 0; i < count(); i++)
-		//{
-		//	if (m_contents[i]->type() == NodeType::DIR)
-		//		if (!flag.empty())
-		//			temp = dynamic_cast<Directory*>(m_contents[i])->find(name, flag);
-		//		else throw std::invalid_argument(name + " is a directory.Pass the recursive flag to delete directories.");
-		//	else {
-		//		if (m_contents[i]->name() == name) {
-		//			delete m_contents[i];
-		//			m_contents[i] = nullptr;
-		//			m_contents.erase(m_contents.begin() + i);
-		//		}
-		//	}
-		//	if (temp) {
-		//		delete temp;
-		//		temp = nullptr;
-		//		for (size_t i = 0; i < count(); i++)
-		//		{
-		//			if (m_contents[i])
-		//			m_contents.erase(m_contents.begin() + i);
-		//		}
-		//	}
-		//	else {
-		//		throw string(name + " does not exist in DIRECTORY_NAME");
-		//	}
-		//----------------------------------------------------------------------------------
-		//for (size_t i = 0; i < count(); i++)
-		//{
-		//	if (m_contents[i]->name() == name) {
-		//		if (m_contents[i]->type() == NodeType::DIR) {
-		//			if (!flag.empty())
-		//				dynamic_cast<Directory*>(m_contents[i])->find(name, flag); //RECURSIVE FLAG MUST BE SET ????????????
-		//			else
-		//				throw std::invalid_argument(name + " is a directory.Pass the recursive flag to delete directories.");
-		//		}
-		//		temp = m_contents[i];
-		//		m_contents.erase(m_contents.begin() + i);
-		//		delete temp;
-		//		found = true;
-
-		//	}
-		//}
-		//if (!found)
-		//	throw string(name + " does not exist in DIRECTORY_NAME"); //replace with DATA
-
 	}
 	void Directory::display(std::ostream& ostr, const std::vector<FormatFlags>& flag) const {
 		ostr << "Total size: " << size() << " bytes" << endl; //might be loop
-		for (size_t i = 0; i < count(); i++)
+		for (int i = 0; i < count(); i++)
 		{
 			if (m_contents[i]->type() == NodeType::DIR)
 				ostr << "D | ";
@@ -161,9 +109,9 @@ namespace sdds
 			ostr.setf(ios::left);
 			ostr << m_contents[i]->name();
 			ostr.unsetf(ios::left);
-			ostr << " | ";
+			ostr << " |";
 			if (!flag.empty()) {
-				ostr.width(2);
+				ostr.width(3);
 				ostr.setf(ios::right);
 				if(m_contents[i]->type() == NodeType::DIR)
 					ostr << m_contents[i]->count();
@@ -179,21 +127,9 @@ namespace sdds
 			ostr << endl;
 		}
 	}
-	//Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flag) {
-	//	Resource* temp{};
-	//	for (auto i : m_contents) {
-	//		if (!flag.empty() && flag[0] == OpFlags::RECURSIVE)
-	//			if (i->type() == NodeType::DIR)
-	//				temp = dynamic_cast<Directory*>(i)->find(name, flag);
-	//		if (name == i->name()) //m_name
-	//			//temp = i;
-	//			return i;
-	//	}
-	//	return temp;
-	//}
 	Directory::~Directory() {
-		for (auto i : m_contents) {
-			delete i;
+		for (auto element : m_contents) {
+			delete element;
 		}
 	}
 

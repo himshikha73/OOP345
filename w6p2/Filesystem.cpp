@@ -9,6 +9,7 @@
 #define  _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <exception>
+#include <stdexcept>
 #include <iostream>
 #include <fstream>
 #include "Filesystem.h"
@@ -67,14 +68,14 @@ namespace sdds
 			end_pos = 0;
 
 			std::getline(fileToRead, record);
-			if (record.find('|') == -1) {
+			if (record.find('|') == string::npos) {
 				//delete leading spaces
 				start_pos = findNonWhiteSpace(record);
 				record = record.substr(start_pos);
 				start_pos = 0;
 				record = record.substr(start_pos, findNonWhiteSpace(record, true) + 1);
 				//find first '/'
-				while(record.find('/') != -1){
+				while(record.find('/') != string::npos){
 					string temp;
 					end_pos = record.find('/');
 					temp = record.substr(start_pos, end_pos + 1);
@@ -105,7 +106,7 @@ namespace sdds
 				//record = record.substr(start_pos, end_pos);
 				start_pos = 0;
 				end_pos = 0;
-				while (pathName.find('/') != -1) {
+				while (pathName.find('/') != string::npos) {
 					string directoryName;
 					end_pos = pathName.find('/');
 					directoryName = pathName.substr(start_pos, end_pos + 1);
@@ -129,28 +130,6 @@ namespace sdds
 				File* file = new File(pathName, record);
 				operator+=(file);
 			}
-
-/*			start_pos = findNonWhiteSpace(record);
-			record = record.substr(start_pos);
-			start_pos = 0;
-
-			end_pos = record.find('|');
-			path = record.substr(start_pos, end_pos - 1);
-			start_pos = 0;
-			path = path.substr(start_pos, findNonWhiteSpace(path, true) + 1);
-
-			start_pos = end_pos + 1;
-			record = record.substr(start_pos);
-			start_pos = findNonWhiteSpace(record);
-			record = record.substr(start_pos);
-			end_pos = findNonWhiteSpace(record, true);
-			content = content.substr(start_pos, end_pos);*/ //might be end_pos + 1
-			//------------------------------------------------
-			//end_pos = record.find('|');
-			//start_pos = 0;
-			//content = record.substr(start_pos, end_pos - 1); //-1
-			//start_pos = 0;
-			//content = content.substr(start_pos, findNonWhiteSpace(content, true) + 1);
 		}
 		m_current = m_root;
 	}

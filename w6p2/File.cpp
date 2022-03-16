@@ -18,14 +18,14 @@ namespace sdds
 	}
 	//sets the parent path to the parameter.
 	void File::update_parent_path(const string& parent_path) {
-		m_parent_path = parent_path + m_name; //m_name might be redundant
+		m_parent_path = parent_path; //m_name might be redundant
 	} 
 	NodeType File::type() const {
 		return NodeType::FILE;
 		
 	};
 	string File::path() const {
-		return m_parent_path; //check it
+		return m_parent_path + name(); //check it
 	}
 	std::string File::name() const {
 		return m_name;
