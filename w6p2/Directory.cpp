@@ -91,13 +91,17 @@ namespace sdds
 			if(flag.empty())
 				throw std::invalid_argument(name + " is a directory.Pass the recursive flag to delete directories.");
 		}
-		delete[] temp;
-		temp = nullptr;
 		for (size_t i = 0; i < count(); i++)
 		{
-			if (!m_contents[i])
+			if (m_contents[i]->name() == temp->name()) {
+				delete temp;
+				temp = nullptr;
 				m_contents.erase(m_contents.begin() + i);
+			}
 		}
+
+
+
 		//----------------------------------------------------------------------------------
 		//for (size_t i = 0; i < count(); i++)
 		//{
