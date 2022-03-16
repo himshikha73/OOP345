@@ -63,22 +63,28 @@ namespace sdds
 		{
 			//set current to root directory
 			m_current = m_root;
+			start_pos = 0;
+			end_pos = 0;
 
 			std::getline(fileToRead, record);
 			if (record.find('|') == -1) {
 				//delete leading spaces
 				start_pos = findNonWhiteSpace(record);
-				record = record.substr(start_pos, findNonWhiteSpace(record, true));
+				record = record.substr(start_pos);
 				start_pos = 0;
+				record = record.substr(start_pos, findNonWhiteSpace(record, true) + 1);
 				//find first '/'
 				while(record.find('/') != -1){
 					string temp;
 					end_pos = record.find('/');
-					temp = record.substr(start_pos, end_pos);
-					Directory* dir = new Directory(temp);
-					if (dir->find(temp))
-						delete dir;
-					operator+=(dir); //might be root instead of current
+					temp = record.substr(start_pos, end_pos + 1);
+					Directory* dir = dynamic_cast<Directory*>(m_current->find(temp));
+					if (!dir) {
+						dir = new Directory(temp); //might be RECURSIVE as it is folder
+						operator+=(dir); //might be root instead of current
+						m_current = dir;
+					}
+					else m_current = dir;
 					record = record.substr(end_pos + 1);
 				}
 				
@@ -88,7 +94,11 @@ namespace sdds
 				end_pos = record.find('|');
 				pathName = record.substr(start_pos, end_pos);
 				//delete leading and trailing spaces
-				pathName = pathName.substr(findNonWhiteSpace(pathName), findNonWhiteSpace(pathName, true) + 1);
+				start_pos = findNonWhiteSpace(pathName);
+				pathName = pathName.substr(start_pos);
+				start_pos = 0;
+				end_pos = findNonWhiteSpace(pathName, true);
+				pathName = pathName.substr(start_pos, end_pos + 1);
 
 				//start_pos = findNonWhiteSpace(record);
 				//end_pos = findNonWhiteSpace(record, true);
@@ -98,21 +108,23 @@ namespace sdds
 				while (pathName.find('/') != -1) {
 					string directoryName;
 					end_pos = pathName.find('/');
-					directoryName = pathName.substr(start_pos, end_pos);
-					Directory* dir = new Directory(directoryName); //might be RECURSIVE as it is folder
-					if (dir->find(directoryName))
-						delete dir;
-					else {
+					directoryName = pathName.substr(start_pos, end_pos + 1);
+					Directory* dir = dynamic_cast<Directory*>(m_current->find(directoryName));
+					if (!dir) {
+						dir = new Directory(directoryName); //might be RECURSIVE as it is folder
 						operator+=(dir); //might be root instead of current
 						m_current = dir;
-						pathName = pathName.substr(end_pos + 1);
-					}
-
+					}else m_current = dir;
+					pathName = pathName.substr(end_pos + 1);
 				}
 
 				start_pos = record.find('|');
 				record = record.substr(start_pos + 1);
-				record = record.substr(findNonWhiteSpace(record), findNonWhiteSpace(record,true) + 1);
+				start_pos = findNonWhiteSpace(record);
+				record = record.substr(start_pos);
+				start_pos = 0;
+				end_pos = findNonWhiteSpace(record, true);
+				record = record.substr(start_pos, end_pos + 1);
 
 				File* file = new File(pathName, record);
 				operator+=(file);
