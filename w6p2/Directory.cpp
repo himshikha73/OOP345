@@ -83,24 +83,66 @@ namespace sdds
 	void Directory::remove(const std::string& name, const std::vector<OpFlags>& flag) {
 		Resource* temp{};
 		bool found = false;
-		for (size_t i = 0; i < count(); i++)
-		{
-			if (m_contents[i]->name() == name) {
-				if (m_contents[i]->type() == NodeType::DIR) {
-					if (!flag.empty())
-						dynamic_cast<Directory*>(m_contents[i])->find(name, flag); //RECURSIVE FLAG MUST BE SET ????????????
-					else
-						throw std::invalid_argument("NAME is a directory.Pass the recursive flag to delete directories.");
-				}
-				temp = m_contents[i];
-				m_contents.erase(m_contents.begin() + i);
-				delete temp;
-				found = true;
 
-			}
-		}
-		if (!found)
-			throw string("NAME does not exist in DIRECTORY_NAME"); //replace with DATA
+		//temp = find(name, flag);
+		//if(!temp)
+		//	throw string(name + " does not exist in DIRECTORY_NAME");
+		//if (temp->type() == NodeType::DIR) {
+		//	if(flag.empty())
+		//		throw std::invalid_argument(name + " is a directory.Pass the recursive flag to delete directories.");
+		//}
+		//delete[] temp;
+		//temp = nullptr;
+		//for (size_t i = 0; i < count(); i++)
+		//{
+		//	if (m_contents[i])
+		//		m_contents.erase(m_contents.begin() + i);
+		//}
+		//----------------------------------------------------------------------------------
+		//for (size_t i = 0; i < count(); i++)
+		//{
+		//	if (m_contents[i]->type() == NodeType::DIR)
+		//		if (!flag.empty())
+		//			temp = dynamic_cast<Directory*>(m_contents[i])->find(name, flag);
+		//		else throw std::invalid_argument(name + " is a directory.Pass the recursive flag to delete directories.");
+		//	else {
+		//		if (m_contents[i]->name() == name) {
+		//			delete m_contents[i];
+		//			m_contents[i] = nullptr;
+		//			m_contents.erase(m_contents.begin() + i);
+		//		}
+		//	}
+		//	if (temp) {
+		//		delete temp;
+		//		temp = nullptr;
+		//		for (size_t i = 0; i < count(); i++)
+		//		{
+		//			if (m_contents[i])
+		//			m_contents.erase(m_contents.begin() + i);
+		//		}
+		//	}
+		//	else {
+		//		throw string(name + " does not exist in DIRECTORY_NAME");
+		//	}
+		//----------------------------------------------------------------------------------
+		//for (size_t i = 0; i < count(); i++)
+		//{
+		//	if (m_contents[i]->name() == name) {
+		//		if (m_contents[i]->type() == NodeType::DIR) {
+		//			if (!flag.empty())
+		//				dynamic_cast<Directory*>(m_contents[i])->find(name, flag); //RECURSIVE FLAG MUST BE SET ????????????
+		//			else
+		//				throw std::invalid_argument(name + " is a directory.Pass the recursive flag to delete directories.");
+		//		}
+		//		temp = m_contents[i];
+		//		m_contents.erase(m_contents.begin() + i);
+		//		delete temp;
+		//		found = true;
+
+		//	}
+		//}
+		//if (!found)
+		//	throw string(name + " does not exist in DIRECTORY_NAME"); //replace with DATA
 
 	}
 	void Directory::display(std::ostream& ostr, const std::vector<FormatFlags>& flag) const {
@@ -119,7 +161,9 @@ namespace sdds
 	//	return temp;
 	//}
 	Directory::~Directory() {
-
+		for (auto i : m_contents) {
+			delete i;
+		}
 	}
 
 };

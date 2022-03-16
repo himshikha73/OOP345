@@ -34,7 +34,8 @@ namespace sdds
 	}
 	Filesystem::Filesystem(std::string fileName, std::string root) {
 		m_root = new Directory(root);
-		m_current = new Directory(root);
+		//m_current = new Directory(root);
+		
 
 		std::ifstream fileToRead(fileName);
 		if (!fileToRead)
@@ -60,6 +61,9 @@ namespace sdds
 
 		for (size_t i = 0; i < count; i++)
 		{
+			//set current to root directory
+			m_current = m_root;
+
 			std::getline(fileToRead, record);
 			if (record.find('|') == -1) {
 				//delete leading spaces
@@ -84,7 +88,7 @@ namespace sdds
 				end_pos = record.find('|');
 				pathName = record.substr(start_pos, end_pos);
 				//delete leading and trailing spaces
-				pathName = pathName.substr(findNonWhiteSpace(pathName), findNonWhiteSpace(pathName, true));
+				pathName = pathName.substr(findNonWhiteSpace(pathName), findNonWhiteSpace(pathName, true) + 1);
 
 				//start_pos = findNonWhiteSpace(record);
 				//end_pos = findNonWhiteSpace(record, true);
@@ -95,16 +99,23 @@ namespace sdds
 					string directoryName;
 					end_pos = pathName.find('/');
 					directoryName = pathName.substr(start_pos, end_pos);
-					Directory* dir = new Directory(directoryName);
+					Directory* dir = new Directory(directoryName); //might be RECURSIVE as it is folder
 					if (dir->find(directoryName))
 						delete dir;
 					else {
 						operator+=(dir); //might be root instead of current
+						m_current = dir;
 						pathName = pathName.substr(end_pos + 1);
 					}
 
 				}
-				File* file = new File(pathName);
+
+				start_pos = record.find('|');
+				record = record.substr(start_pos + 1);
+				record = record.substr(findNonWhiteSpace(record), findNonWhiteSpace(record,true) + 1);
+
+				File* file = new File(pathName, record);
+				operator+=(file);
 			}
 
 /*			start_pos = findNonWhiteSpace(record);
@@ -131,19 +142,26 @@ namespace sdds
 		}
 	}
 	Directory* Filesystem::change_directory(const std::string& name) {
-		if (name.empty())
-			delete m_current;
-		m_current = m_root;
-		if (!m_current->find(name))
-			throw std::invalid_argument("Cannot change directory!DIR_NAME not found!");
+		if (name.empty()) {
+			m_current = m_root;
+		}
+		else {
+			Directory* newDir = dynamic_cast<Directory*>(m_root->find(name));
+			if (!newDir)
+				throw std::invalid_argument("Cannot change directory! " + name + " not found!");
+			return newDir;
+		}
+
+
 	}
 	Directory* Filesystem::get_current_directory() const {
 		return m_current;
 	}
 	Filesystem& Filesystem::operator+=(Resource* res) {
-		//*m_current += res;
+		*m_current += res;
 		//return m_current;
 		//???????????????????????
+		return *this;
 	}
 	// move copyconstructor
 	Filesystem::Filesystem(Filesystem&& rightOperand) {
@@ -164,6 +182,6 @@ namespace sdds
 	}
 	Filesystem::~Filesystem() {
 		delete m_root;
-		delete m_current;
+		//delete m_current;
 	}
 }
