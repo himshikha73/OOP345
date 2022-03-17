@@ -3,7 +3,7 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           12.03.2022
+// Date:           17.03.2022
 //==============================================
 
 #define  _CRT_SECURE_NO_WARNINGS
@@ -35,7 +35,5 @@ namespace sdds
 	}
 	size_t File::size() const {
 		return m_contents.length();
-	}
-	File::~File() {
 	}
 }

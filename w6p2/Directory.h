@@ -3,7 +3,7 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           12.03.2022
+// Date:           17.03.2022
 //==============================================
 
 #ifndef SDDS_DIR_H
@@ -16,7 +16,7 @@ namespace sdds
 	class Directory : public Resource
 	{
 	private:
-		std::vector<Resource*> m_contents; //* might be redundant
+		std::vector<Resource*> m_contents;
 	public:
 		Directory(std::string dirName);
 		void update_parent_path(const std::string&);

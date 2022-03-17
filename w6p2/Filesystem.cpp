@@ -3,7 +3,7 @@
 // Student Number: 147302202
 // Email:          vlabliuk@myseneca.ca
 // Section:        NBB
-// Date:           12.03.2022
+// Date:           17.03.2022
 //==============================================
 
 #define  _CRT_SECURE_NO_WARNINGS
@@ -34,17 +34,17 @@ namespace sdds
 		return 0;
 	}
 	Filesystem::Filesystem(std::string fileName, std::string root) {
-		m_root = new Directory(root);
-		//m_current = new Directory(root);
-		
 
 		std::ifstream fileToRead(fileName);
 		if (!fileToRead)
 		{
 			throw std::invalid_argument("File cannot be opened.");
 		}
+		//create root directory
+		m_root = new Directory(root);
 		size_t count = 0;
 		std::string record;
+		//count number of lines
 		do
 		{
 			std::getline(fileToRead, record);
@@ -67,19 +67,23 @@ namespace sdds
 			start_pos = 0;
 			end_pos = 0;
 
+			//read whole line
 			std::getline(fileToRead, record);
+			//do this block for folders ('|' abscent)
 			if (record.find('|') == string::npos) {
-				//delete leading spaces
+				//read line and delete leading and trailing spaces
 				start_pos = findNonWhiteSpace(record);
 				record = record.substr(start_pos);
 				start_pos = 0;
 				record = record.substr(start_pos, findNonWhiteSpace(record, true) + 1);
-				//find first '/'
+				//do it while '/' presents
 				while(record.find('/') != string::npos){
 					string temp;
 					end_pos = record.find('/');
 					temp = record.substr(start_pos, end_pos + 1);
+					//find directory
 					Directory* dir = dynamic_cast<Directory*>(m_current->find(temp));
+					//if not found, create it and add to current directory, otherwise set it to current
 					if (!dir) {
 						dir = new Directory(temp); //might be RECURSIVE as it is folder
 						operator+=(dir); //might be root instead of current
@@ -90,35 +94,36 @@ namespace sdds
 				}
 				
 			}
+			//do this block for files ('|' presents)
 			else {
+				//get file path from file line (read until '|')
 				string pathName;
 				end_pos = record.find('|');
 				pathName = record.substr(start_pos, end_pos);
-				//delete leading and trailing spaces
 				start_pos = findNonWhiteSpace(pathName);
 				pathName = pathName.substr(start_pos);
 				start_pos = 0;
 				end_pos = findNonWhiteSpace(pathName, true);
 				pathName = pathName.substr(start_pos, end_pos + 1);
 
-				//start_pos = findNonWhiteSpace(record);
-				//end_pos = findNonWhiteSpace(record, true);
-				//record = record.substr(start_pos, end_pos);
 				start_pos = 0;
 				end_pos = 0;
+				//create new directory if '/' presents in string
 				while (pathName.find('/') != string::npos) {
 					string directoryName;
 					end_pos = pathName.find('/');
 					directoryName = pathName.substr(start_pos, end_pos + 1);
+					//find directory
 					Directory* dir = dynamic_cast<Directory*>(m_current->find(directoryName));
+					//if not found create it and add to current directory, otherwise make it current
 					if (!dir) {
-						dir = new Directory(directoryName); //might be RECURSIVE as it is folder
-						operator+=(dir); //might be root instead of current
+						dir = new Directory(directoryName);
+						operator+=(dir);
 						m_current = dir;
 					}else m_current = dir;
 					pathName = pathName.substr(end_pos + 1);
 				}
-
+				//get file content from string
 				start_pos = record.find('|');
 				record = record.substr(start_pos + 1);
 				start_pos = findNonWhiteSpace(record);
@@ -127,12 +132,16 @@ namespace sdds
 				end_pos = findNonWhiteSpace(record, true);
 				record = record.substr(start_pos, end_pos + 1);
 
+				//create new file
 				File* file = new File(pathName, record);
+				//add file to current directory
 				operator+=(file);
 			}
 		}
+		//set current directory to root
 		m_current = m_root;
 	}
+	//change dirrectory only if it exists
 	Directory* Filesystem::change_directory(const std::string& name) {
 		if (name.empty()) {
 			m_current = m_root;
@@ -150,8 +159,6 @@ namespace sdds
 	}
 	Filesystem& Filesystem::operator+=(Resource* res) {
 		*m_current += res;
-		//return m_current;
-		//???????????????????????
 		return *this;
 	}
 	// move copyconstructor
@@ -173,6 +180,5 @@ namespace sdds
 	}
 	Filesystem::~Filesystem() {
 		delete m_root;
-		//delete m_current;
 	}
 }
