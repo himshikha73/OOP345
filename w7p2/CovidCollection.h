@@ -10,6 +10,7 @@
 #define SDDS_FILE_H
 #include <string>
 #include <vector>
+#include <list>
 namespace sdds
 {
 
@@ -30,7 +31,11 @@ namespace sdds
 	public:
 		CovidCollection(std::string fileName);
 		void display(std::ostream& out) const;
-
+		void sort();
+		void cleanList();
+		bool inCollection() const;
+		std::list<Covid> getListForCountry() const;
+		std::list<Covid> getListForVariant() const;
 	};
 	std::ostream& operator<<(std::ostream& out, const Covid& theCovid);
 }

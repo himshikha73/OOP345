@@ -156,6 +156,21 @@ namespace sdds
 		out.width(7);
 		out << totalDeaths << " |";
 	}
+	void CovidCollection::sort() {
+
+	}
+	void CovidCollection::cleanList() {
+
+	}
+	bool CovidCollection::inCollection() const {
+
+	}
+	std::list<Covid> CovidCollection::getListForCountry() const {
+
+	}
+	std::list<Covid> CovidCollection::getListForVariant() const {
+
+	}
 	ostream& operator<<(ostream& out, const Covid& theCovid) {
 		//| COUNTRY(20) | CITY(15) | VARIANT(20) | YEAR(6) | CASES | DEATHS |
 		out << "| ";
