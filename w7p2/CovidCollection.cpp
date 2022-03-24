@@ -9,6 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <iomanip>
+#include <string>
 #include <algorithm>
 #include "CovidCollection.h"
 using namespace std;
@@ -38,13 +40,6 @@ namespace sdds
 		}
 		size_t count = 0;
 		std::string record;
-		
-		//std::string country;
-		//std::string city;
-		//std::string variant;
-		//int cases;
-		//size_t year;
-		//size_t deaths;
 
 		//count number of lines
 		do
@@ -140,10 +135,26 @@ namespace sdds
 		{
 			out << i;
 		}*/
-		for_each(m_infections.begin(), m_infections.end(), [=, &out](Covid n) -> void 
+		int totalCases{};
+		int totalDeaths{};
+		for_each(m_infections.begin(), m_infections.end(), [=, &totalDeaths, &totalCases, &out](Covid n) -> void 
 			{
+				totalCases += n.m_cases;
+				totalDeaths += n.m_deaths;
 				out << n;
 			});
+		out << "| ";
+		out.unsetf(ios::right);
+		out.width(62);
+		out << "Total Cases Around the World:";
+		out.width(7);
+		out << totalCases << " |";
+		out << "| ";
+		out.unsetf(ios::right);
+		out.width(62);
+		out << "Total Deaths Around the World:";
+		out.width(7);
+		out << totalDeaths << " |";
 	}
 	ostream& operator<<(ostream& out, const Covid& theCovid) {
 		//| COUNTRY(20) | CITY(15) | VARIANT(20) | YEAR(6) | CASES | DEATHS |
