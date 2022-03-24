@@ -6,6 +6,7 @@
 // Date:           23.03.2022
 //==============================================
 #define  _CRT_SECURE_NO_WARNINGS
+#define GET_VARIABLE_NAME(Variable) (#Variable)
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -135,8 +136,8 @@ namespace sdds
 		{
 			out << i;
 		}*/
-		int totalCases{};
-		int totalDeaths{};
+		size_t totalCases{};
+		size_t totalDeaths{};
 		for_each(m_infections.begin(), m_infections.end(), [=, &totalDeaths, &totalCases, &out](Covid n) -> void 
 			{
 				totalCases += n.m_cases;
@@ -156,14 +157,53 @@ namespace sdds
 		out.width(7);
 		out << totalDeaths << " |";
 	}
-	void CovidCollection::sort() {
-
+	template <typename T>
+	bool CovidCollection::compare(const T& val1, const T& val2)const {
+		return (val1 < val2);
 	}
+	void CovidCollection::sort(std::string name) {
+		//country, variant, cases or deaths
+		if (name == "country") {
+			//std::sort(m_infections.begin(), m_infections.end(), compare(m_infections, m_infections));
+			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2) 
+				{
+					return cov1.m_country < cov1.m_country;
+				});
+		}
+		else if (name == "variant") {
+			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
+				{
+					return cov1.m_variant < cov1.m_variant;
+				});
+		}
+		else if (name == "cases") {
+			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
+				{
+					return cov1.m_cases < cov1.m_cases;
+				});
+		}
+		else if (name == "deaths") {
+			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
+				{
+					return cov1.m_deaths < cov1.m_deaths;
+				});
+		}
+		
+	}
+
+	//Review it!!!!
 	void CovidCollection::cleanList() {
-
+		for_each(m_infections.begin(), m_infections.end(), [](Covid n) -> void
+			{
+				if (n.m_variant == "[None]")
+					n.m_variant = "";
+			});
 	}
-	bool CovidCollection::inCollection() const {
-
+	bool CovidCollection::inCollection(string name) const {
+		for_each(m_infections.begin(), m_infections.end(), [=](Covid n) -> bool
+			{
+				return n.m_variant == name;
+			});
 	}
 	std::list<Covid> CovidCollection::getListForCountry() const {
 

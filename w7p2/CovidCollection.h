@@ -31,11 +31,13 @@ namespace sdds
 	public:
 		CovidCollection(std::string fileName);
 		void display(std::ostream& out) const;
-		void sort();
+		void sort(std::string name);
 		void cleanList();
-		bool inCollection() const;
+		bool inCollection(std::string name) const;
 		std::list<Covid> getListForCountry() const;
 		std::list<Covid> getListForVariant() const;
+		template <typename T>
+		bool compare(const T& covid1, const T& covid2)const;
 	};
 	std::ostream& operator<<(std::ostream& out, const Covid& theCovid);
 }
