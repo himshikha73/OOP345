@@ -6,7 +6,6 @@
 // Date:           23.03.2022
 //==============================================
 #define  _CRT_SECURE_NO_WARNINGS
-#define GET_VARIABLE_NAME(Variable) (#Variable)
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -103,7 +102,6 @@ namespace sdds
 			record = record.substr(end_pos);
 			start_pos = findNonWhiteSpace(record);
 			record = record.substr(start_pos);
-			//record = record.substr(end_pos);
 			infection.m_year = stoi(record);
 
 			//find cases
@@ -124,22 +122,6 @@ namespace sdds
 		}
 	}
 	void CovidCollection::display(std::ostream& out) const {
-		// below snippet find first number greater than 4
-// find_if searches for an element for which
-// function(third argument) returns true
-		//for_each(m_infections.begin(),
-		//	std::next(m_infections.begin(), 5),
-		//	[](int x) {std::cout << ' ' << x; });
-		//vector<Covid>::iterator it = ([=](int i) -> Covid
-		//	{
-		//		return m_infections.front();
-		//	});
-		//cout << "First number greater than 4 is : " << *p << endl;
-		//vector<Covid>::iterator it;
-		/*for (Covid i : m_infections)
-		{
-			out << i;
-		}*/
 		size_t totalCases{};
 		size_t totalDeaths{};
 		for_each(m_infections.begin(), m_infections.end(), [=, &totalDeaths, &totalCases, &out](Covid n) -> void 
@@ -162,33 +144,27 @@ namespace sdds
 		out.width(7);
 		out << totalDeaths << " |" << endl;
 	}
-	template <typename T>
-	bool CovidCollection::compare(const T& val1, const T& val2)const {
-		return (val1 < val2);
-	}
 	void CovidCollection::sort(std::string name) {
-		//country, variant, cases or deaths
 		if (name == "country") {
-			//std::sort(m_infections.begin(), m_infections.end(), compare(m_infections, m_infections));
-			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2) 
+			std::sort(m_infections.begin(), m_infections.end(), [](const Covid cov1, const Covid cov2) 
 				{
 					return cov1.m_country < cov2.m_country;
 				});
 		}
 		else if (name == "variant") {
-			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
+			std::sort(m_infections.begin(), m_infections.end(), [](const Covid cov1, const Covid cov2)
 				{
 					return cov1.m_variant < cov2.m_variant;
 				});
 		}
 		else if (name == "cases") {
-			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
+			std::sort(m_infections.begin(), m_infections.end(), [](const Covid cov1, const Covid cov2)
 				{
 					return cov1.m_cases < cov2.m_cases;
 				});
 		}
 		else if (name == "deaths") {
-			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
+			std::sort(m_infections.begin(), m_infections.end(), [](const Covid cov1, const Covid cov2)
 				{
 					return cov1.m_deaths < cov2.m_deaths;
 				});
@@ -196,37 +172,26 @@ namespace sdds
 		
 	}
 
-	//Review it!!!!
 	void CovidCollection::cleanList() {
 		for_each(m_infections.begin(), m_infections.end(), [=](Covid& cov) -> void
 			{
 				if (cov.m_variant == "[None]")
-				//if(inCollection("[None]"))
 					cov.m_variant = "";
 			});
 	}
 	bool CovidCollection::inCollection(string name) const {
 		bool found = false;
 		for_each(m_infections.begin(), m_infections.end(), [=,&found](Covid cov) -> void
-		//std::find(m_infections.begin(), m_infections.end(), [=, &found](Covid cov)
 			{
 				if (cov.m_variant == name)
 					found = true;
-				//found = cov.m_variant == name;
-				//return n.m_variant == name;
 			});
 		return found;
 	}
 	std::list<Covid> CovidCollection::getListForCountry(string name) const {
-		//std::sort(m_infections.begin(), m_infections.end(), [=](Covid& cov)
-		//	{
-		//		return cov.m_country == name;
-		//	});
 		list<Covid> l;
 		for_each(m_infections.begin(), m_infections.end(), [=,&l](Covid cov) -> void
 			{
-				//found = n.m_variant == name;
-				//return n.m_variant == name;
 				if (cov.m_country == name)
 					l.push_back(cov);
 
@@ -237,8 +202,6 @@ namespace sdds
 		list<Covid> l;
 		for_each(m_infections.begin(), m_infections.end(), [=,&l](Covid cov) -> void
 			{
-				//found = n.m_variant == name;
-				//return n.m_variant == name;
 				if (cov.m_variant == name)
 					l.push_back(cov);
 
@@ -246,7 +209,6 @@ namespace sdds
 		return l;
 	}
 	ostream& operator<<(ostream& out, const Covid& theCovid) {
-		//| COUNTRY(20) | CITY(15) | VARIANT(20) | YEAR(6) | CASES | DEATHS |
 		out << "| ";
 		out.unsetf(ios::right);
 		out.setf(ios::left);
@@ -269,7 +231,7 @@ namespace sdds
 		out << " | ";
 		out.width(3);
 		out << theCovid.m_deaths;
-		out << " | ";
+		out << " |";
 		out.unsetf(ios::right);
 		return out;
 	}

@@ -36,8 +36,6 @@ namespace sdds
 		bool inCollection(std::string name) const;
 		std::list<Covid> getListForCountry(std::string name) const;
 		std::list<Covid> getListForVariant(std::string name) const;
-		template <typename T>
-		bool compare(const T& covid1, const T& covid2)const;
 	};
 	std::ostream& operator<<(std::ostream& out, const Covid& theCovid);
 }
