@@ -108,12 +108,16 @@ namespace sdds
 
 			//find cases
 			end_pos = record.find(' ');
-			record = record.substr(end_pos + 1);
+			record = record.substr(end_pos);
+			start_pos = findNonWhiteSpace(record);
+			record = record.substr(start_pos);
 			infection.m_cases = stoi(record);
 
 			//find deaths
 			end_pos = record.find(' ');
-			record = record.substr(end_pos + 1);
+			record = record.substr(end_pos);
+			start_pos = findNonWhiteSpace(record);
+			record = record.substr(start_pos);
 			infection.m_deaths = stoi(record);
 			
 			m_infections.push_back(infection);
@@ -142,20 +146,21 @@ namespace sdds
 			{
 				totalCases += n.m_cases;
 				totalDeaths += n.m_deaths;
-				out << n;
+				out << n << endl;
 			});
+		out << std::setw(89) << std::setfill('-') << '\n' << std::setfill(' ');
 		out << "| ";
 		out.unsetf(ios::right);
-		out.width(62);
+		out.width(77);
 		out << "Total Cases Around the World:";
 		out.width(7);
-		out << totalCases << " |";
+		out << totalCases << " |" << endl;
 		out << "| ";
 		out.unsetf(ios::right);
-		out.width(62);
+		out.width(77);
 		out << "Total Deaths Around the World:";
 		out.width(7);
-		out << totalDeaths << " |";
+		out << totalDeaths << " |" << endl;
 	}
 	template <typename T>
 	bool CovidCollection::compare(const T& val1, const T& val2)const {
@@ -167,25 +172,25 @@ namespace sdds
 			//std::sort(m_infections.begin(), m_infections.end(), compare(m_infections, m_infections));
 			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2) 
 				{
-					return cov1.m_country < cov1.m_country;
+					return cov1.m_country < cov2.m_country;
 				});
 		}
 		else if (name == "variant") {
 			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
 				{
-					return cov1.m_variant < cov1.m_variant;
+					return cov1.m_variant < cov2.m_variant;
 				});
 		}
 		else if (name == "cases") {
 			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
 				{
-					return cov1.m_cases < cov1.m_cases;
+					return cov1.m_cases < cov2.m_cases;
 				});
 		}
 		else if (name == "deaths") {
 			std::sort(m_infections.begin(), m_infections.end(), [](Covid& cov1, Covid& cov2)
 				{
-					return cov1.m_deaths < cov1.m_deaths;
+					return cov1.m_deaths < cov2.m_deaths;
 				});
 		}
 		
@@ -193,23 +198,52 @@ namespace sdds
 
 	//Review it!!!!
 	void CovidCollection::cleanList() {
-		for_each(m_infections.begin(), m_infections.end(), [](Covid n) -> void
+		for_each(m_infections.begin(), m_infections.end(), [=](Covid& cov) -> void
 			{
-				if (n.m_variant == "[None]")
-					n.m_variant = "";
+				if (cov.m_variant == "[None]")
+				//if(inCollection("[None]"))
+					cov.m_variant = "";
 			});
 	}
 	bool CovidCollection::inCollection(string name) const {
-		for_each(m_infections.begin(), m_infections.end(), [=](Covid n) -> bool
+		bool found = false;
+		for_each(m_infections.begin(), m_infections.end(), [=,&found](Covid cov) -> void
+		//std::find(m_infections.begin(), m_infections.end(), [=, &found](Covid cov)
 			{
-				return n.m_variant == name;
+				if (cov.m_variant == name)
+					found = true;
+				//found = cov.m_variant == name;
+				//return n.m_variant == name;
 			});
+		return found;
 	}
-	std::list<Covid> CovidCollection::getListForCountry() const {
+	std::list<Covid> CovidCollection::getListForCountry(string name) const {
+		//std::sort(m_infections.begin(), m_infections.end(), [=](Covid& cov)
+		//	{
+		//		return cov.m_country == name;
+		//	});
+		list<Covid> l;
+		for_each(m_infections.begin(), m_infections.end(), [=,&l](Covid cov) -> void
+			{
+				//found = n.m_variant == name;
+				//return n.m_variant == name;
+				if (cov.m_country == name)
+					l.push_back(cov);
 
+			});
+		return l;
 	}
-	std::list<Covid> CovidCollection::getListForVariant() const {
+	std::list<Covid> CovidCollection::getListForVariant(string name) const {
+		list<Covid> l;
+		for_each(m_infections.begin(), m_infections.end(), [=,&l](Covid cov) -> void
+			{
+				//found = n.m_variant == name;
+				//return n.m_variant == name;
+				if (cov.m_variant == name)
+					l.push_back(cov);
 
+			});
+		return l;
 	}
 	ostream& operator<<(ostream& out, const Covid& theCovid) {
 		//| COUNTRY(20) | CITY(15) | VARIANT(20) | YEAR(6) | CASES | DEATHS |
@@ -235,7 +269,7 @@ namespace sdds
 		out << " | ";
 		out.width(3);
 		out << theCovid.m_deaths;
-		out << " | " << endl;
+		out << " | ";
 		out.unsetf(ios::right);
 		return out;
 	}

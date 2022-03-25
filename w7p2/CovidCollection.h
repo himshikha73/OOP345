@@ -34,8 +34,8 @@ namespace sdds
 		void sort(std::string name);
 		void cleanList();
 		bool inCollection(std::string name) const;
-		std::list<Covid> getListForCountry() const;
-		std::list<Covid> getListForVariant() const;
+		std::list<Covid> getListForCountry(std::string name) const;
+		std::list<Covid> getListForVariant(std::string name) const;
 		template <typename T>
 		bool compare(const T& covid1, const T& covid2)const;
 	};
