@@ -34,16 +34,32 @@ namespace sdds {
 
 		//TODO: Implement the Luhn Algorithm to check the 
 		//      valadity of SIN No's
-		bool sinValidation(const std::string) {
-			//DO LOGIC
-			return false;
+		bool checkLuhn(std::string input)
+		{
+			size_t len = input.length();
+			size_t number = 0;
+			size_t sum = 0;
+			for (size_t i = 0; i < len; i++)
+			{
+				number = input[i] - '0';
+				if (i % 2 != 0)
+				{
+					number *= 2;
+					if (number > 9)
+					{
+						number -= 9;
+					}
+				}
+				sum += number;
+			}
+			return sum % 10 == 0;
 		}
-
 
 		//TODO: Overload the += operator with a raw pointer
 		// as a second operand.
-		void GeneratingList::operator+=(T* obj) {
-			list.push_back(T);
+		template<typename T>
+		void operator+=(T* obj) {
+			list.push_back(*obj);
 		}
 
 

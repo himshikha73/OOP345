@@ -80,7 +80,7 @@ namespace sdds {
 		//TODO: add a function here to check correct salary range
 		void rangeValidator() {
 			if (m_salary > 99999 || m_counter < 0)
-				throw "salary is not valid";
+				throw std::string("Employees salaray range is not valid");
 		}
 
 		void print(std::ostream& os)const {
