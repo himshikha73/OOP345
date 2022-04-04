@@ -1,3 +1,11 @@
+//==============================================
+// Name:           Volodymyr Labliuk
+// Student Number: 147302202
+// Email:          vlabliuk@myseneca.ca
+// Section:        NBB
+// Date:           03.04.2022
+//==============================================
+
 #include "GeneratingList.h"
 #include "EmpProfile.h"
 #include "WritingRecord.h"
@@ -14,11 +22,12 @@ namespace sdds {
 			for (size_t j = 0; j < sal.size(); j++)
 			{
 				if (emp[i].id == sal[j].id) {
-					EmployeeWage ew(emp[i].name, sal[j].salary);
+					EmployeeWage ew (emp[i].name, sal[j].salary);
 					ew.rangeValidator();
 					if (!activeEmp.checkLuhn(emp[i].id))
-						throw std::string("Wrong Salaries with SIN No's");
-					activeEmp += &ew;
+						throw std::string("*** Wrong Salaries with SIN No's");
+					EmployeeWage* p = &ew;
+					activeEmp += p;
 				}
 			}
 		}

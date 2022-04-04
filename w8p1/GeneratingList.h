@@ -1,3 +1,11 @@
+//==============================================
+// Name:           Volodymyr Labliuk
+// Student Number: 147302202
+// Email:          vlabliuk@myseneca.ca
+// Section:        NBB
+// Date:           03.04.2022
+//==============================================
+
 #ifndef SDDS_GENERATINGLIST_H
 #define SDDS_GENERATINGLIST_H
 
@@ -57,7 +65,6 @@ namespace sdds {
 
 		//TODO: Overload the += operator with a raw pointer
 		// as a second operand.
-		template<typename T>
 		void operator+=(T* obj) {
 			list.push_back(*obj);
 		}

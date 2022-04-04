@@ -1,3 +1,11 @@
+//==============================================
+// Name:           Volodymyr Labliuk
+// Student Number: 147302202
+// Email:          vlabliuk@myseneca.ca
+// Section:        NBB
+// Date:           03.04.2022
+//==============================================
+
 #ifndef SDDS_EMPPROFILE_H
 #define SDDS_EMPPROFILE_H
 
@@ -80,7 +88,7 @@ namespace sdds {
 		//TODO: add a function here to check correct salary range
 		void rangeValidator() {
 			if (m_salary > 99999 || m_counter < 0)
-				throw std::string("Employees salaray range is not valid");
+				throw std::string("*** Employees salaray range is not valid");
 		}
 
 		void print(std::ostream& os)const {
