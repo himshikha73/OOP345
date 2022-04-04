@@ -27,7 +27,8 @@ namespace sdds {
 					ew.rangeValidator();
 					if (!activeEmp.checkLuhn(emp[i].id))
 						throw std::string("*** Wrong Salaries with SIN No's");
-					activeEmp += ew;
+					EmployeeWage* p = &ew;
+					activeEmp += p;
 				}
 			}
 		}
