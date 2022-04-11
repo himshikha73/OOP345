@@ -15,6 +15,7 @@
 #include<functional>
 #include<vector>
 #include<thread>
+#include<mutex>
 
 namespace sdds_ws9 {
 	void computeAvgFactor(const int*, int, int, double&);

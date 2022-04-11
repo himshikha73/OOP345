@@ -12,9 +12,12 @@
 using namespace std;
 namespace sdds_ws9 {
 
+	static mutex key;
+
 	void computeAvgFactor(const int* arr, int size, int divisor, double& avg) {
 		avg = 0;
 		for (int i = 0; i < size; i++) {
+			
 			avg += arr[i];
 		}
 		avg /= divisor;
@@ -91,10 +94,17 @@ namespace sdds_ws9 {
 		std::vector<std::thread> avg_threads;
 		std::vector<std::thread> var_threads;
 
+		
+
 		for (int i = 0; i < num_threads; i++)
 		{
 			auto average = std::bind(computeAvgFactor, &data[p_indices[i]], total_items / num_threads, total_items, ref(averages[i]));
+			
 			avg_threads.push_back(std::thread(average));
+		}
+		for (int i = 0; i < num_threads; i++)
+		{
+			avg_threads[i].join();
 		}
 		for (int i = 0; i < num_threads; i++)
 		{
@@ -110,6 +120,10 @@ namespace sdds_ws9 {
 		}
 		for (int i = 0; i < num_threads; i++)
 		{
+			var_threads[i].join();
+		}
+		for (int i = 0; i < num_threads; i++)
+		{
 			var += variances[i];
 		}
 		std::fstream file(fileName,
@@ -120,11 +134,7 @@ namespace sdds_ws9 {
 			file.write(reinterpret_cast<char*>(&data[i]), sizeof(data[i]));
 			i++;
 		}
-		for (int i = 0; i < num_threads; i++)
-		{
-			avg_threads[i].join();
-			var_threads[i].join();
-		}
+
 		return 0;
 	}
 }
