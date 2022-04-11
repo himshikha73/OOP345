@@ -1,11 +1,15 @@
-// Workshop 9 - Multi-Threading, Thread Class
-// process_data.cpp
-// 2021/1/5 - Jeevan Pant
+//==============================================
+// Name:           Volodymyr Labliuk
+// Student Number: 147302202
+// Email:          vlabliuk@myseneca.ca
+// Section:        NBB
+// Date:           11.04.2022
+//==============================================
 
 
 #include "process_data.h"
 
-using namespace std::placeholders;
+using namespace std;
 namespace sdds_ws9 {
 
 	void computeAvgFactor(const int* arr, int size, int divisor, double& avg) {
@@ -44,8 +48,7 @@ namespace sdds_ws9 {
 		data = new int[total_items];
 		int i = 0;
 		while (!file.eof()) {
-			//for (size_t i = 0; i < total_items; i++)
-			//{
+
 			file.read(reinterpret_cast<char*>(&data[i]), sizeof(data[i]));
 			i++;
 		}
@@ -85,101 +88,43 @@ namespace sdds_ws9 {
 	// Also, read the workshop instruction.
 	int ProcessData::operator()(std::string fileName, double& avg, double& var) {
 
-		//num_threads = 2;
-		//averages = new double[num_threads];
-		//variances = new double[num_threads];
-		//p_indices = new int[num_threads];
-		//p_indices[0] = data[0];
-		//p_indices[1] = data[(total_items / num_threads) + 1];
-		
-		//avg_p = &averages[0];
-		//p_indices = &data[0];
-
-		//auto average = std::bind(computeAvgFactor, p_indices, total_items / num_threads, total_items, averages);
-
 		std::vector<std::thread> avg_threads;
 		std::vector<std::thread> var_threads;
 
-		for (size_t i = 0; i < num_threads; i++)
+		for (int i = 0; i < num_threads; i++)
 		{
-			//auto average = std::bind(computeAvgFactor, &data[p_indices[i]], total_items / num_threads, total_items, averages[i]);
-
-			//avg_threads.push_back(std::thread(average));
-			avg_threads.push_back(std::thread(std::bind(computeAvgFactor, &data[p_indices[i]] , total_items / num_threads, total_items, averages[i])));
-			std::cout << data[p_indices[i]] << std::endl;
-			std::cout << averages[i];
+			auto average = std::bind(computeAvgFactor, &data[p_indices[i]], total_items / num_threads, total_items, ref(averages[i]));
+			avg_threads.push_back(std::thread(average));
 		}
-		for (size_t i = 0; i < num_threads; i++)
+		for (int i = 0; i < num_threads; i++)
 		{
 			avg += averages[i];
 		}
-		for (size_t i = 0; i < avg_threads.size(); i++)
+		for (int i = 0; i < num_threads; i++)
 		{
-			avg_threads[i].join();
-		}
-		//--------------------------------------------------------------------------------------------------
-		for (size_t i = 0; i < num_threads; i++)
-		{
-			auto variance = std::bind(computeVarFactor, &data[p_indices[i]], total_items / num_threads, total_items, avg, variances[i]);
-			std::cout << variances[i];
+			auto variance = std::bind(computeVarFactor, &data[p_indices[i]], total_items / num_threads, total_items, avg, 
+				ref(variances[i]));
+			
 			var_threads.push_back(std::thread(variance));
+
 		}
-		for (size_t i = 0; i < num_threads; i++)
+		for (int i = 0; i < num_threads; i++)
 		{
 			var += variances[i];
 		}
-		for (size_t i = 0; i < avg_threads.size(); i++)
-		{
-			var_threads[i].join();
-		}
-
-		//avg = averages[0] + averages[1];
-
-		//p_indices = &data[0];
-		//avg_p = &averages[0];
-		//std::thread t1(average);
-
-		//p_indices = &data[(total_items / num_threads) + 1];
-		//avg_p = &averages[1];
-		//auto average2 = std::bind(computeAvgFactor, p_indices, total_items / num_threads, total_items, averages[1]);
-		//::thread t2(average);
-		/*auto average = std::bind(computeAvgFactor, data, _1, _2, _3);*/
-		//auto variance = std::bind(computeVarFactor, data, _1, _2, avg, _3);
-
-		
-		
-		//std::thread t1(computeAvgFactor, data[0], total_items / 2, total_items / 2, first_part);
-		//std::thread t2(computeAvgFactor, data[(total_items / 2) + 1], total_items / 2, total_items / 2, second_part);
-
-
-
-
-
-		//std::thread t3(computeVarFactor, data[0], total_items / 2, total_items / 2, avg, first_part);
-		//std::thread t4(computeVarFactor, data[(total_items / 2) + 1], total_items / 2, total_items / 2, avg, second_part);
-
-		//var = (first_part + second_part) / 2;
-
-		//t1.join();
-		//t2.join();
-		//t3.join();
-		//t4.join();
-		//computeAvgFactor(data, total_items, total_items, avg);
-		//computeVarFactor(data, total_items, total_items, avg, var);
 		std::fstream file(fileName,
 			std::ios::out | std::ios::binary);
 		file.write(reinterpret_cast<char*>(&total_items), sizeof(total_items));
 		int i = 0;
 		while (i < total_items) {
-			//for (size_t i = 0; i < total_items; i++)
-			//{
 			file.write(reinterpret_cast<char*>(&data[i]), sizeof(data[i]));
 			i++;
 		}
+		for (int i = 0; i < num_threads; i++)
+		{
+			avg_threads[i].join();
+			var_threads[i].join();
+		}
 		return 0;
 	}
-
-
-
-
 }

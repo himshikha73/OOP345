@@ -1,6 +1,10 @@
-// Workshop 9 - Multi-threading, Thread class 
-// w9_p2.cpp 
-// 2022/1/5 - Jeevan Pant
+//==============================================
+// Name:           Volodymyr Labliuk
+// Student Number: 147302202
+// Email:          vlabliuk@myseneca.ca
+// Section:        NBB
+// Date:           11.04.2022
+//==============================================
 
 #include <iostream>
 #include <iomanip>

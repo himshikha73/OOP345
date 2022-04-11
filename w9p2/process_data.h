@@ -1,6 +1,10 @@
-// Workshop 9 - Multi-Threading, Thread Class
-// process_data.h
-// 2021/1/5 - Jeevan Pant
+//==============================================
+// Name:           Volodymyr Labliuk
+// Student Number: 147302202
+// Email:          vlabliuk@myseneca.ca
+// Section:        NBB
+// Date:           11.04.2022
+//==============================================
 
 #ifndef SDDS_W9_PROCESSDATA_H
 #define SDDS_W9_PROCESSDATA_H
