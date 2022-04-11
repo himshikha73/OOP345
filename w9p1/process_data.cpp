@@ -58,7 +58,10 @@ namespace sdds_ws9 {
 		data = new int[total_items];
 		int i = 0;
 		while (!file.eof()) {
-			file.read(reinterpret_cast<char*>(&data[i++]), sizeof(data[i]));;
+		//for (size_t i = 0; i < total_items; i++)
+		//{
+			file.read(reinterpret_cast<char*>(&data[i]), sizeof(data[i]));
+			i++;
 		}
 
 
@@ -80,17 +83,17 @@ namespace sdds_ws9 {
 
 	// TODO You create implementation of function operator(). See workshop instructions for details . 
 	int ProcessData::operator()(std::string fileName, double& avg, double& var) {
-		double l_avg;
-		double l_var;
-		computeAvgFactor(data, total_items, total_items, l_avg);
-		computeVarFactor(data, total_items, total_items, l_avg, l_var);
+		computeAvgFactor(data, total_items, total_items, avg);
+		computeVarFactor(data, total_items, total_items, avg, var);
 		std::fstream file(fileName,
-			std::ios::out | std::ios::binary |
-			std::ios::trunc);
+			std::ios::out | std::ios::binary);
 		file.write(reinterpret_cast<char*>(&total_items), sizeof(total_items));
-		int i = total_items;
-		while (i--) {
-			file.write(reinterpret_cast<char*>(&data[i]), sizeof(data));
+		int i = 0;
+		while (i < total_items) {
+		//for (size_t i = 0; i < total_items; i++)
+		//{
+			file.write(reinterpret_cast<char*>(&data[i]), sizeof(data[i]));
+			i++;
 		}
 		return 0;
 	}
